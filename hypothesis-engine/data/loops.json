@@ -1,0 +1,572 @@
+[
+  {
+    "id": "rejection-withdrawal-spiral",
+    "role": "Relational Safety Loop",
+    "name": "The Rejection-Withdrawal Spiral",
+    "steps": [
+      {
+        "label": "RSD fires",
+        "source": "both"
+      },
+      {
+        "label": "Emotional overreaction",
+        "source": "adhd"
+      },
+      {
+        "label": "Can't name what you feel",
+        "source": "asd"
+      },
+      {
+        "label": "Withdraw to protect",
+        "source": "asd"
+      },
+      {
+        "label": "Emotional permanence fades",
+        "source": "adhd"
+      },
+      {
+        "label": "Reconnection feels impossible",
+        "source": "both"
+      },
+      {
+        "label": "Isolation increases sensitivity",
+        "source": "both"
+      }
+    ],
+    "desc": "Perceived rejection triggers high arousal before emotional labeling catches up, so withdrawal feels protective. Reduced social-thread continuity raises reconnection cost, which increases isolation and sensitivity to the next rejection cue.",
+    "impacts": [
+      "rsd",
+      "alexithymia",
+      "masking",
+      "emotional-permanence",
+      "continuity-of-self",
+      "social-tug-of-war",
+      "social-inference",
+      "inhibitory-control",
+      "emotional-signal-decoding-latency"
+    ]
+  },
+  {
+    "id": "capacity-collapse",
+    "role": "Energy Depletion Loop",
+    "name": "The Capacity Collapse",
+    "steps": [
+      {
+        "label": "Masking all day",
+        "source": "asd"
+      },
+      {
+        "label": "Sensory overload",
+        "source": "both"
+      },
+      {
+        "label": "Executive function degrades",
+        "source": "adhd"
+      },
+      {
+        "label": "Can't initiate recovery",
+        "source": "adhd"
+      },
+      {
+        "label": "Demand avoidance triggers",
+        "source": "both"
+      },
+      {
+        "label": "Shame and self-judgement",
+        "source": "both"
+      },
+      {
+        "label": "Burnout deepens",
+        "source": "asd"
+      }
+    ],
+    "desc": "Masking and sensory load drain regulatory bandwidth faster than recovery actions can start. As initiation fails, shame and demand pressure rise, which deepens burnout and lowers next-day capacity.",
+    "impacts": [
+      "masking",
+      "sensory",
+      "executive",
+      "demand-avoidance",
+      "burnout",
+      "sleep-wake-conflict",
+      "transition-shock",
+      "urgency-dependence",
+      "sensory-prediction-load",
+      "reward-volatility",
+      "proprioceptive-calibration",
+      "morning-startup-lag",
+      "musculoskeletal-strain"
+    ]
+  },
+  {
+    "id": "executive-paralysis-chain",
+    "role": "Initiation Failure Loop",
+    "name": "The Executive Paralysis Chain",
+    "steps": [
+      {
+        "label": "Task perceived as demand",
+        "source": "asd"
+      },
+      {
+        "label": "Dopamine signal fails",
+        "source": "adhd"
+      },
+      {
+        "label": "Executive freeze",
+        "source": "both"
+      },
+      {
+        "label": "Time blindness masks delay",
+        "source": "adhd"
+      },
+      {
+        "label": "Sudden panic at deadline",
+        "source": "adhd"
+      },
+      {
+        "label": "RSD from perceived failure",
+        "source": "both"
+      }
+    ],
+    "desc": "Demand threat and low activation combine into a startup freeze while time tracking slips. Deadline panic then forces a high-cost push, reinforcing RSD and future avoidance.",
+    "impacts": [
+      "demand-avoidance",
+      "executive",
+      "time-blindness",
+      "rsd",
+      "decision-paralysis",
+      "urgency-dependence",
+      "inhibitory-control",
+      "reward-volatility",
+      "morning-startup-lag"
+    ]
+  },
+  {
+    "id": "sensory-social-exhaustion-arc",
+    "role": "Social Load Loop",
+    "name": "The Sensory-Social Exhaustion Arc",
+    "steps": [
+      {
+        "label": "Social environment noise",
+        "source": "both"
+      },
+      {
+        "label": "Filtering fails",
+        "source": "adhd"
+      },
+      {
+        "label": "Conscious script running",
+        "source": "asd"
+      },
+      {
+        "label": "Interoception goes dark",
+        "source": "both"
+      },
+      {
+        "label": "Sudden irritability",
+        "source": "both"
+      },
+      {
+        "label": "Masking collapse",
+        "source": "asd"
+      }
+    ],
+    "desc": "Unfiltered sensory input plus manual social scripting consume processing reserves and mute body warning signals. Delayed overload detection then presents as abrupt irritability or mask collapse, increasing future social load.",
+    "impacts": [
+      "sensory",
+      "masking",
+      "interoception",
+      "alexithymia",
+      "burnout",
+      "social-tug-of-war",
+      "stimming-conflict",
+      "social-inference",
+      "transition-shock",
+      "sensory-prediction-load",
+      "proprioceptive-calibration",
+      "musculoskeletal-strain",
+      "emotional-signal-decoding-latency"
+    ]
+  },
+  {
+    "id": "engine-conflict-loop",
+    "role": "Stability-Stimulation Loop",
+    "name": "The Engine Conflict Loop",
+    "steps": [
+      {
+        "label": "Build rigid routine",
+        "source": "asd"
+      },
+      {
+        "label": "Routine becomes deadening",
+        "source": "adhd"
+      },
+      {
+        "label": "Novelty chase breaks structure",
+        "source": "adhd"
+      },
+      {
+        "label": "Predictability collapses",
+        "source": "asd"
+      },
+      {
+        "label": "Anxiety and avoidance spike",
+        "source": "both"
+      },
+      {
+        "label": "Emergency routine rebuild",
+        "source": "both"
+      }
+    ],
+    "desc": "Stability routines reduce threat but eventually lose reward value and feel deadening. Novelty seeking breaks structure, which spikes anxiety and forces stricter routine rebuilding.",
+    "impacts": [
+      "routine-novelty",
+      "executive",
+      "demand-avoidance",
+      "burnout",
+      "sleep-wake-conflict",
+      "transition-shock",
+      "urgency-dependence",
+      "reward-volatility"
+    ]
+  },
+  {
+    "id": "leaky-flow-loop",
+    "role": "Focus Fragmentation Loop",
+    "name": "The Leaky Flow Loop",
+    "steps": [
+      {
+        "label": "Enter deep tunnel",
+        "source": "asd"
+      },
+      {
+        "label": "Distractor pops attention",
+        "source": "adhd"
+      },
+      {
+        "label": "Task fragments",
+        "source": "both"
+      },
+      {
+        "label": "Half-finished interest pile",
+        "source": "both"
+      },
+      {
+        "label": "Shame blocks re-entry",
+        "source": "both"
+      },
+      {
+        "label": "Crave perfect flow return",
+        "source": "asd"
+      }
+    ],
+    "desc": "Deep tunnel focus forms, but salience intrusions repeatedly break task-state continuity. Fragmentation and shame increase re-entry cost, making unfinished work more likely in the next cycle.",
+    "impacts": [
+      "monotropism",
+      "interest-cycle",
+      "executive",
+      "time-blindness",
+      "decision-paralysis",
+      "burnout",
+      "transition-shock",
+      "reward-volatility"
+    ]
+  },
+  {
+    "id": "night-recovery-debt-loop",
+    "role": "Circadian Recovery Loop",
+    "name": "The Night Recovery Debt Loop",
+    "steps": [
+      {
+        "label": "Night finally feels quiet",
+        "source": "asd"
+      },
+      {
+        "label": "Dopamine-seeking keeps you up",
+        "source": "adhd"
+      },
+      {
+        "label": "Sleep window slides later",
+        "source": "adhd"
+      },
+      {
+        "label": "Morning executive crash",
+        "source": "both"
+      },
+      {
+        "label": "Sensory tolerance drops",
+        "source": "asd"
+      },
+      {
+        "label": "Need night refuge even more",
+        "source": "both"
+      }
+    ],
+    "desc": "Night offers the first low-noise window, so stimulation and catch-up activity delay sleep onset. Sleep debt then lowers daytime regulation, which makes night refuge feel even more necessary.",
+    "impacts": [
+      "sleep-wake-conflict",
+      "time-blindness",
+      "executive",
+      "sensory",
+      "burnout",
+      "continuity-of-self",
+      "urgency-dependence",
+      "reward-volatility",
+      "sensory-prediction-load",
+      "proprioceptive-calibration",
+      "morning-startup-lag",
+      "musculoskeletal-strain"
+    ]
+  },
+  {
+    "id": "startup-ramp-loop",
+    "role": "State Activation Loop",
+    "name": "The Morning Boot Ramp",
+    "steps": [
+      {
+        "label": "Wake but not operational",
+        "source": "adhd"
+      },
+      {
+        "label": "Forced transition pressure",
+        "source": "both"
+      },
+      {
+        "label": "Motor and executive misfires",
+        "source": "both"
+      },
+      {
+        "label": "Compensatory tension rises",
+        "source": "both"
+      },
+      {
+        "label": "Day compresses into urgency",
+        "source": "adhd"
+      },
+      {
+        "label": "Late-night catch-up extends",
+        "source": "adhd"
+      },
+      {
+        "label": "Next startup lag worsens",
+        "source": "both"
+      }
+    ],
+    "desc": "Wakefulness arrives before functional activation, so external demands hit during incomplete startup. Urgency compensation shifts work later, reinforcing the next morning's activation lag.",
+    "impacts": [
+      "morning-startup-lag",
+      "sleep-wake-conflict",
+      "executive",
+      "time-blindness",
+      "urgency-dependence",
+      "transition-shock",
+      "musculoskeletal-strain",
+      "burnout"
+    ]
+  },
+  {
+    "id": "reentry-debt-loop",
+    "role": "Reentry Debt Loop",
+    "name": "The Reentry Debt Loop",
+    "steps": [
+      {
+        "label": "Interrupted task-state",
+        "source": "both"
+      },
+      {
+        "label": "Context thread drops",
+        "source": "adhd"
+      },
+      {
+        "label": "Re-entry feels costly",
+        "source": "asd"
+      },
+      {
+        "label": "Delay and avoidance",
+        "source": "both"
+      },
+      {
+        "label": "Backlog pressure grows",
+        "source": "both"
+      },
+      {
+        "label": "Restart barrier increases",
+        "source": "both"
+      }
+    ],
+    "desc": "Interruptions drop active context and raise the energy needed to re-enter the original task. Each delayed restart adds backlog pressure, which further increases restart friction.",
+    "impacts": [
+      "interruption-reentry-friction",
+      "working-memory-reliability",
+      "initiation-friction",
+      "executive",
+      "demand-avoidance",
+      "burnout",
+      "occupational-volatility"
+    ]
+  },
+  {
+    "id": "calibration-debt-loop",
+    "role": "Body Calibration Loop",
+    "name": "The Calibration Debt Loop",
+    "steps": [
+      {
+        "label": "Body cues detected late",
+        "source": "both"
+      },
+      {
+        "label": "Compensatory movement rises",
+        "source": "both"
+      },
+      {
+        "label": "Pain and fatigue spike",
+        "source": "both"
+      },
+      {
+        "label": "Movement variety drops",
+        "source": "both"
+      },
+      {
+        "label": "Conditioning regresses",
+        "source": "both"
+      },
+      {
+        "label": "Baseline calibration worsens",
+        "source": "both"
+      }
+    ],
+    "desc": "Late body-cue detection drives compensatory movement and uneven load distribution. Pain and deconditioning then reduce calibration accuracy, increasing future compensation.",
+    "impacts": [
+      "body-needs-neglect",
+      "interoception",
+      "proprioceptive-calibration",
+      "musculoskeletal-strain",
+      "chronic-pain-amplification",
+      "conditioning-deconditioning-swing",
+      "burnout"
+    ]
+  },
+  {
+    "id": "social-repair-loop",
+    "role": "Relational Repair Loop",
+    "name": "The Social Repair Loop",
+    "steps": [
+      {
+        "label": "Social miss or rupture",
+        "source": "both"
+      },
+      {
+        "label": "RSD and threat spike",
+        "source": "both"
+      },
+      {
+        "label": "Repair initiation stalls",
+        "source": "both"
+      },
+      {
+        "label": "Withdrawal despite longing",
+        "source": "both"
+      },
+      {
+        "label": "Ambiguity compounds",
+        "source": "both"
+      },
+      {
+        "label": "Trust weakens over time",
+        "source": "both"
+      }
+    ],
+    "desc": "Rupture cues trigger threat and RSD before repair initiation can mobilize. Delay and withdrawal increase ambiguity, which accelerates relational drift and future threat sensitivity.",
+    "impacts": [
+      "social-repair-delay",
+      "social-withdrawal-reachout-conflict",
+      "rsd",
+      "social-inference",
+      "masking",
+      "relationship-trust-erosion",
+      "emotional-permanence",
+      "continuity-of-self"
+    ]
+  },
+  {
+    "id": "planning-churn-loop",
+    "role": "Planning Churn Loop",
+    "name": "The Planning Churn Loop",
+    "steps": [
+      {
+        "label": "Too many active variables",
+        "source": "both"
+      },
+      {
+        "label": "Priorities re-rank repeatedly",
+        "source": "both"
+      },
+      {
+        "label": "Start action is delayed",
+        "source": "adhd"
+      },
+      {
+        "label": "Urgency compresses choices",
+        "source": "adhd"
+      },
+      {
+        "label": "Output quality swings",
+        "source": "both"
+      },
+      {
+        "label": "Replanning replaces execution",
+        "source": "both"
+      }
+    ],
+    "desc": "High variable load keeps priorities reordering faster than action can start. Urgency then compresses choices, reinforcing replanning over execution.",
+    "impacts": [
+      "sequencing-prioritization",
+      "decision-paralysis",
+      "initiation-friction",
+      "urgency-dependence",
+      "executive",
+      "occupational-volatility",
+      "admin-avoidance-accumulation"
+    ]
+  },
+  {
+    "id": "hyperfocus-debt-loop",
+    "role": "Hyperfocus Debt Loop",
+    "name": "The Hyperfocus Debt Loop",
+    "steps": [
+      {
+        "label": "Deep tunnel engagement",
+        "source": "both"
+      },
+      {
+        "label": "Body cues are postponed",
+        "source": "both"
+      },
+      {
+        "label": "Recovery debt accumulates",
+        "source": "both"
+      },
+      {
+        "label": "Next-day capacity drops",
+        "source": "both"
+      },
+      {
+        "label": "Pain and fatigue increase",
+        "source": "both"
+      },
+      {
+        "label": "Future tunnel control worsens",
+        "source": "both"
+      }
+    ],
+    "desc": "Sustained tunnel engagement postpones body maintenance and recovery behaviors. The resulting recovery debt lowers next-day control and increases pain/fatigue, making future tunnels less stable.",
+    "impacts": [
+      "monotropism",
+      "interruption-reentry-friction",
+      "body-needs-neglect",
+      "sleep-wake-conflict",
+      "burnout",
+      "chronic-pain-amplification",
+      "interest-cycle"
+    ]
+  }
+]
