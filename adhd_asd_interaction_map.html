@@ -1,0 +1,3367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADHD × ASD Interaction Map</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f1119;
+    --surface: #171a25;
+    --surface-hover: #1e2233;
+    --border: #2a2e3d;
+    --text: #c8cdd8;
+    --text-dim: #6b7280;
+    --text-bright: #e8ecf4;
+    --adhd: #e8935a;
+    --adhd-dim: rgba(232,147,90,0.12);
+    --adhd-glow: rgba(232,147,90,0.25);
+    --asd: #5a9ee8;
+    --asd-dim: rgba(90,158,232,0.12);
+    --asd-glow: rgba(90,158,232,0.25);
+    --both: #a87ed4;
+    --both-dim: rgba(168,126,212,0.12);
+    --both-glow: rgba(168,126,212,0.25);
+    --loop: #e85a7a;
+    --loop-dim: rgba(232,90,122,0.08);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  body.modal-open {
+    overflow: hidden;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 2.2em;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 0.95em;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 28px 0 12px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82em;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .legend-dot.adhd { background: var(--adhd); }
+  .legend-dot.asd { background: var(--asd); }
+  .legend-dot.both { background: var(--both); }
+  .legend-dot.loop { background: var(--loop); border-radius: 2px; }
+
+  .hint {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.8em;
+    margin-bottom: 36px;
+    font-style: italic;
+  }
+
+  .map-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin: -10px 0 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-cluster {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-dim);
+    margin-right: 2px;
+  }
+
+  .filter-chip {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-dim);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.75em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-chip:hover {
+    color: var(--text);
+    border-color: rgba(255,255,255,0.35);
+  }
+
+  .filter-chip.active {
+    color: var(--text-bright);
+    border-color: rgba(168,126,212,0.65);
+    background: rgba(168,126,212,0.15);
+  }
+
+  .filter-count {
+    font-size: 0.76em;
+    color: var(--text-dim);
+    margin-left: 4px;
+  }
+
+  .discovery-trigger {
+    border: 1px solid rgba(232,90,122,0.45);
+    background: rgba(232,90,122,0.11);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.78em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .discovery-trigger:hover {
+    border-color: rgba(232,90,122,0.75);
+    background: rgba(232,90,122,0.2);
+    color: var(--text-bright);
+  }
+
+  .discovery-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .discovery-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.05em;
+    color: var(--text-bright);
+    margin-bottom: 5px;
+  }
+
+  .discovery-subtitle {
+    font-size: 0.82em;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .discovery-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .discovery-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .discovery-item-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+
+  .discovery-chain {
+    font-size: 0.86em;
+    color: var(--text);
+    line-height: 1.45;
+  }
+
+  .discovery-meta {
+    font-size: 0.76em;
+    color: var(--text-dim);
+  }
+
+  .discovery-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .discovery-action {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 0.73em;
+    cursor: pointer;
+  }
+
+  .discovery-action:hover {
+    border-color: var(--both);
+    color: var(--text-bright);
+  }
+
+  .discovery-panel.end-section {
+    margin-top: 60px;
+    padding-top: 26px;
+    border-top: 1px solid var(--border);
+    background: transparent;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 0;
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 0;
+  }
+
+  .discovery-panel-controls {
+    margin-bottom: 10px;
+  }
+
+  .layer-stack {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+
+  .layer-section {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+
+  .layer-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+
+  .layer-kicker {
+    font-size: 0.68em;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--both);
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+
+  .layer-title {
+    font-family: 'Fraunces', serif;
+    color: var(--text-bright);
+    font-size: 1.18em;
+    line-height: 1.3;
+  }
+
+  .layer-subtitle {
+    color: var(--text-dim);
+    font-size: 0.82em;
+    margin-top: 4px;
+    max-width: 760px;
+  }
+
+  .layer-count {
+    font-size: 0.75em;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  /* Node grid */
+  .node-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 700px) {
+    .node-grid { grid-template-columns: 1fr; }
+  }
+
+  .node-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .node-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+
+  .node-card:hover { background: var(--surface-hover); border-color: #3a3f52; }
+  .node-card:hover::before { opacity: 1; }
+
+  .node-card.active { border-color: #4a5068; }
+  .node-card.active::before { opacity: 1; }
+
+  .node-card[data-source="adhd"]::before { background: var(--adhd); }
+  .node-card[data-source="asd"]::before { background: var(--asd); }
+  .node-card[data-source="both"]::before { background: var(--both); }
+
+  .node-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .node-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.15em;
+    color: var(--text-bright);
+    line-height: 1.3;
+  }
+
+  .source-tag {
+    font-size: 0.65em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-left: 12px;
+    margin-top: 3px;
+  }
+
+  .source-tag.adhd { background: var(--adhd-dim); color: var(--adhd); }
+  .source-tag.asd { background: var(--asd-dim); color: var(--asd); }
+  .source-tag.both { background: var(--both-dim); color: var(--both); }
+
+  .node-brief {
+    color: var(--text-dim);
+    font-size: 0.88em;
+    line-height: 1.55;
+    margin-bottom: 0;
+  }
+
+  .node-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .node-tag {
+    font-size: 0.66em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .node-tag.body-systems {
+    color: #98c4ff;
+    border-color: rgba(90,158,232,0.45);
+    background: rgba(90,158,232,0.14);
+  }
+
+  .node-tag.layer-tag {
+    color: #dec8f6;
+    border-color: rgba(168,126,212,0.55);
+    background: rgba(168,126,212,0.16);
+  }
+
+  .mechanism-hint {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px dashed rgba(168,126,212,0.55);
+    background: rgba(168,126,212,0.1);
+    color: var(--text);
+    font-size: 0.82em;
+    line-height: 1.5;
+  }
+
+  .mechanism-action {
+    margin-left: 8px;
+    border: 1px solid rgba(168,126,212,0.5);
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 2px 9px;
+    font-size: 0.78em;
+    cursor: pointer;
+  }
+
+  .mechanism-action:hover {
+    border-color: rgba(168,126,212,0.8);
+    color: var(--text-bright);
+  }
+
+  /* Expanded detail panel */
+  .detail-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, margin 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    margin-top: 0;
+  }
+
+  .node-card.active .detail-panel {
+    max-height: 800px;
+    opacity: 1;
+    margin-top: 16px;
+  }
+
+  .layer0-focus-card {
+    cursor: default;
+  }
+
+  .layer0-focus-card .expand-icon {
+    display: none;
+  }
+
+  .layer0-focus-card .detail-panel {
+    max-height: 1600px;
+  }
+
+  .detail-divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 16px;
+  }
+
+  .interaction-section {
+    margin-bottom: 14px;
+  }
+
+  .interaction-label {
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .interaction-label.adhd-label { color: var(--adhd); }
+  .interaction-label.asd-label { color: var(--asd); }
+  .interaction-label.combined-label { color: var(--both); }
+
+  .interaction-text {
+    color: var(--text);
+    font-size: 0.88em;
+    line-height: 1.6;
+  }
+
+  /* Neuroscience Section */
+  .neuro-section {
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 18px;
+    border: 1px dashed var(--border);
+  }
+
+  .neuro-label {
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .neuro-label::before {
+    content: '🧠';
+    font-size: 1.2em;
+  }
+
+  .neuro-meta {
+    margin-bottom: 12px;
+  }
+
+  .neuro-meta-item {
+    font-size: 0.82em;
+    margin-bottom: 8px;
+  }
+
+  .neuro-meta-label {
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-right: 4px;
+  }
+
+  .neuro-impact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  @media (max-width: 600px) {
+    .neuro-impact-grid { grid-template-columns: 1fr; }
+  }
+
+  .impact-box {
+    font-size: 0.8em;
+    line-height: 1.5;
+  }
+
+  .impact-box strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .impact-adhd { color: var(--adhd); }
+  .impact-asd { color: var(--asd); }
+
+  /* Brain Atlas Section */
+  .atlas-section {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .atlas-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    min-height: 500px;
+  }
+
+  @media (max-width: 850px) {
+    .atlas-container { grid-template-columns: 1fr; }
+  }
+
+  .atlas-nav {
+    background: rgba(0,0,0,0.2);
+    padding: 24px 0;
+    border-right: 1px solid var(--border);
+  }
+
+  .atlas-nav-item {
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: var(--text-dim);
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+
+  .atlas-nav-item:hover {
+    color: var(--text-bright);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .atlas-nav-item.active {
+    color: var(--text-bright);
+    background: rgba(255,255,255,0.05);
+    border-left-color: var(--both);
+  }
+
+  .atlas-nav-item .loop-nav-kicker {
+    margin-bottom: 3px;
+  }
+
+  .atlas-nav-item .loop-nav-name {
+    font-size: 0.88em;
+    color: var(--text-dim);
+  }
+
+  .atlas-nav-item:hover .loop-nav-name,
+  .atlas-nav-item.active .loop-nav-name {
+    color: var(--text-bright);
+  }
+
+  .atlas-content {
+    padding: 32px;
+  }
+
+  .atlas-region-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.8em;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  .atlas-region-subtitle {
+    font-size: 0.9em;
+    color: var(--both);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .atlas-region-desc {
+    font-size: 1em;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .atlas-links-title {
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .atlas-links-subtitle {
+    font-size: 0.82em;
+    color: var(--text-dim);
+    margin: -4px 0 12px;
+    line-height: 1.5;
+  }
+
+  .atlas-meta-row {
+    margin: -4px 0 16px;
+  }
+
+  .mapping-density-badge {
+    display: inline-block;
+    font-size: 0.74em;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .atlas-link-tag {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--surface-hover);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.82em;
+    color: var(--text);
+    margin-right: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .atlas-link-tag:hover {
+    border-color: var(--both);
+    transform: translateY(-1px);
+  }
+
+  .neuro-region-link {
+    color: var(--both);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .highlight-pulse {
+    animation: pulse-border 2s 2;
+  }
+
+  @keyframes pulse-border {
+    0% { border-color: var(--border); box-shadow: 0 0 0 0 rgba(168, 126, 212, 0); }
+    50% { border-color: var(--both); box-shadow: 0 0 20px 0 var(--both-glow); }
+    100% { border-color: var(--border); box-shadow: 0 0 0 0 rgba(168, 126, 212, 0); }
+  }
+
+  .connections {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .connections-title {
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .connection-pill {
+    display: inline-block;
+    font-size: 0.78em;
+    padding: 4px 10px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    margin: 2px 4px 2px 0;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .connection-pill.second-degree-pill {
+    border-style: dashed;
+    border-color: rgba(168,126,212,0.55);
+    background: rgba(168,126,212,0.08);
+    color: var(--text);
+  }
+
+  .connection-pill:hover {
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+  }
+
+  .connection-pill .arrow { color: var(--loop); margin: 0 2px; font-size: 0.85em; }
+
+  .via-meta {
+    opacity: 0.75;
+    margin-left: 6px;
+    font-size: 0.9em;
+  }
+
+  .connection-empty {
+    font-size: 0.78em;
+    color: var(--text-dim);
+    opacity: 0.9;
+  }
+
+  .path-explain-trigger {
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+    font-size: 0.85em;
+    line-height: 1.3;
+    cursor: pointer;
+  }
+
+  .path-explain-trigger:hover {
+    border-color: var(--both);
+    background: rgba(168,126,212,0.18);
+  }
+
+  .path-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 8, 16, 0.78);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 40;
+  }
+
+  .path-modal-backdrop.open {
+    display: flex;
+  }
+
+  .path-modal {
+    width: min(740px, 100%);
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+  }
+
+  .path-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .path-modal-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2em;
+    color: var(--text-bright);
+    line-height: 1.35;
+  }
+
+  .path-modal-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 1.2em;
+    line-height: 1;
+  }
+
+  .path-modal-close:hover {
+    border-color: var(--both);
+    color: var(--text-bright);
+  }
+
+  .path-modal-subtitle {
+    color: var(--text-dim);
+    font-size: 0.88em;
+    margin-bottom: 14px;
+  }
+
+  .path-highlight-note {
+    background: rgba(168,126,212,0.09);
+    border: 1px dashed rgba(168,126,212,0.55);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    color: var(--text);
+    font-size: 0.86em;
+    line-height: 1.55;
+  }
+
+  .path-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .path-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .path-chain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .path-node-chip {
+    font-size: 0.8em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .path-node-chip:hover {
+    border-color: var(--both);
+    color: var(--text-bright);
+  }
+
+  .path-node-chip.source { border-color: rgba(232,147,90,0.4); }
+  .path-node-chip.via { border-color: rgba(168,126,212,0.4); }
+  .path-node-chip.target { border-color: rgba(90,158,232,0.4); }
+
+  .path-hop {
+    color: var(--loop);
+    opacity: 0.8;
+    font-size: 0.85em;
+  }
+
+  .path-item-note {
+    color: var(--text-dim);
+    font-size: 0.82em;
+    line-height: 1.55;
+  }
+
+  /* Feedback loops section */
+  .loops-section {
+    margin-top: 16px;
+  }
+
+  .loops-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.5em;
+    color: var(--text-bright);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .loops-subtitle {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.88em;
+    margin-bottom: 28px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .loops-container {
+    display: grid;
+    grid-template-columns: 290px 1fr;
+    gap: 0;
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    min-height: 420px;
+  }
+
+  @media (max-width: 900px) {
+    .loops-container { grid-template-columns: 1fr; }
+  }
+
+  .loops-nav {
+    background: rgba(0,0,0,0.22);
+    padding: 20px 0;
+    border-right: 1px solid var(--border);
+  }
+
+  .loop-nav-item {
+    padding: 12px 20px;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .loop-nav-item:hover {
+    background: rgba(255,255,255,0.03);
+  }
+
+  .loop-nav-item.active {
+    background: rgba(255,255,255,0.05);
+    border-left-color: var(--loop);
+  }
+
+  .loop-nav-kicker {
+    font-size: 0.67em;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .loop-nav-name {
+    font-size: 0.9em;
+    color: var(--text);
+    line-height: 1.35;
+    font-weight: 500;
+  }
+
+  .loop-nav-item.active .loop-nav-name {
+    color: var(--text-bright);
+  }
+
+  .loops-content {
+    padding: 28px;
+  }
+
+  .loop-role {
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--loop);
+    margin-bottom: 8px;
+  }
+
+  .loop-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.35em;
+    color: var(--text-bright);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  .loop-chain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 16px 0 14px;
+    padding: 14px;
+    border: 1px dashed rgba(232,90,122,0.35);
+    border-radius: 10px;
+    background: var(--loop-dim);
+  }
+
+  .loop-step {
+    font-size: 0.82em;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
+  .loop-step.adhd { background: var(--adhd-dim); color: var(--adhd); }
+  .loop-step.asd { background: var(--asd-dim); color: var(--asd); }
+  .loop-step.both { background: var(--both-dim); color: var(--both); }
+
+  .loop-arrow {
+    color: var(--text-dim);
+    font-size: 0.9em;
+  }
+
+  .loop-desc {
+    color: var(--text-dim);
+    font-size: 0.9em;
+    line-height: 1.6;
+  }
+
+  .layer-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .layer-toggle-btn {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-dim);
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 0.75em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .layer-toggle-btn.active {
+    color: var(--text-bright);
+    border-color: rgba(232,90,122,0.6);
+    background: rgba(232,90,122,0.14);
+  }
+
+  .loop-state-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .loop-state-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .loop-state-name {
+    font-size: 0.86em;
+    color: var(--text-bright);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .loop-links-title {
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--text-dim);
+    margin: 16px 0 10px;
+  }
+
+  .crossmap-block {
+    margin-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 12px;
+  }
+
+  .crossmap-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .loop-link-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    font-size: 0.8em;
+    color: var(--text);
+    margin-right: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .loop-link-tag:hover {
+    border-color: var(--both);
+    color: var(--text-bright);
+    transform: translateY(-1px);
+  }
+
+  /* Expand indicator */
+  .expand-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    text-align: center;
+    line-height: 18px;
+    font-size: 0.7em;
+    color: var(--text-dim);
+    transition: all 0.3s;
+    flex-shrink: 0;
+    margin-top: 4px;
+    margin-left: 8px;
+  }
+
+  .node-card.active .expand-icon {
+    transform: rotate(45deg);
+    border-color: var(--text-dim);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>ADHD × ASD Interaction Map</h1>
+    <p class="subtitle">How forty-four core experiences are shaped by ADHD, ASD, and their internal contradictions — and how they feed into each other</p>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot adhd"></div>Primarily ADHD</div>
+      <div class="legend-item"><div class="legend-dot asd"></div>Primarily ASD</div>
+      <div class="legend-item"><div class="legend-dot both"></div>Both ADHD + ASD</div>
+      <div class="legend-item"><div class="legend-dot loop"></div>Feedback loop</div>
+    </div>
+  </header>
+
+  <p class="hint">Explore Layer 0 primitives through Layer 3 downstream phenomena. Click any card to unpack mechanisms, then use filters and pathway discovery to test new hypotheses.</p>
+
+  <div class="map-toolbar">
+    <div class="filter-cluster" role="group" aria-label="Node filters">
+      <span class="filter-label">Filter</span>
+      <button type="button" class="filter-chip active" data-filter="all">All</button>
+      <button type="button" class="filter-chip" data-filter="body-systems">Body</button>
+      <button type="button" class="filter-chip" data-filter="adhd">ADHD</button>
+      <button type="button" class="filter-chip" data-filter="asd">ASD</button>
+      <button type="button" class="filter-chip" data-filter="both">Both</button>
+      <span class="filter-count" id="filterCount"></span>
+    </div>
+  </div>
+
+  <div class="loops-section" id="layer0Section">
+    <h2 class="loops-title">Layer 0: Core Functional Primitives</h2>
+    <p class="loops-subtitle">Core impairments, delays, and atypical neurodevelopmental processing. Navigate primitives using the same explorer pattern as loops and atlas.</p>
+    <div class="loops-container">
+      <div class="loops-nav" id="layer0Nav"></div>
+      <div class="loops-content" id="layer0Content"></div>
+    </div>
+  </div>
+
+  <div class="loops-section" id="layer1Section">
+    <h2 class="loops-title">Layer 1: Primary Lived Patterns</h2>
+    <p class="loops-subtitle">First-order day-to-day patterns that are directly expressed from Layer 0 functional primitives.</p>
+    <div class="loops-container">
+      <div class="loops-nav" id="layer1Nav"></div>
+      <div class="loops-content" id="layer1Content"></div>
+    </div>
+  </div>
+
+  <div class="loops-section" id="layer2Section">
+    <h2 class="loops-title">Layer 2: Compounding Loop States</h2>
+    <p class="loops-subtitle">Patterns that stabilize into repeated cycles across days and weeks; switch between pattern and loop-state views.</p>
+    <div class="loops-container">
+      <div class="loops-nav" id="layer2Nav"></div>
+      <div class="loops-content" id="layer2Content"></div>
+    </div>
+  </div>
+
+  <div class="layer-stack" id="layeredNodeSections"></div>
+
+  <div class="loops-section">
+    <h2 class="loops-title">Feedback Loops</h2>
+    <p class="loops-subtitle">These are dynamic self-reinforcing cycles. Pick a loop to inspect its mechanism and jump straight to related experiences.</p>
+    <div class="loops-container">
+      <div class="loops-nav" id="loopsNav"></div>
+      <div class="loops-content" id="loopsContent"></div>
+    </div>
+  </div>
+
+  <div class="atlas-section">
+    <h2 class="loops-title">Brain Atlas</h2>
+    <p class="loops-subtitle">A map of the key regions involved in neurodivergent experience. Click a region to see which functions it influences.</p>
+    <div class="atlas-container">
+      <div class="atlas-nav" id="atlasNav"></div>
+      <div class="atlas-content" id="atlasContent"></div>
+    </div>
+  </div>
+
+  <div class="discovery-panel end-section">
+    <div class="discovery-title">Pathway Discovery</div>
+    <div class="discovery-subtitle">Automatically surfaces high-leverage missing links based on two-hop bridges and network overlap. Use Explain to inspect mechanisms before adding direct links.</div>
+    <div class="discovery-panel-controls">
+      <button type="button" class="discovery-trigger" id="discoverPathwaysBtn">Discover Candidate Pathways</button>
+    </div>
+    <div class="discovery-list" id="discoveryList"></div>
+  </div>
+</div>
+
+<div class="path-modal-backdrop" id="pathModalBackdrop" aria-hidden="true">
+  <div class="path-modal" role="dialog" aria-modal="true" aria-labelledby="pathModalTitle">
+    <div class="path-modal-header">
+      <div class="path-modal-title" id="pathModalTitle">Pathway explainer</div>
+      <button class="path-modal-close" id="pathModalClose" type="button" aria-label="Close pathway explainer">&times;</button>
+    </div>
+    <div class="path-modal-subtitle" id="pathModalSubtitle"></div>
+    <div class="path-modal-body" id="pathModalBody"></div>
+  </div>
+</div>
+
+<script>
+const nodes = [
+  {
+    id: "rsd",
+    title: "Rejection Sensitive Dysphoria",
+    source: "both",
+    brief: "Perceived rejection triggers an immediate emotional crisis — not proportionate annoyance, but something closer to a full-body emergency.",
+    adhd: "Dysregulated dopamine/norepinephrine means the prefrontal cortex can't brake the amygdala's emotional response. The signal arrives at full intensity without moderation. This is the engine — the raw emotional overreaction.",
+    asd: "Difficulty reading social signals accurately creates a hypersensitive threat-detection system with a high false-positive rate. You're scanning constantly but interpreting ambiguously. This is the trigger — uncertain social input feeding the overreactive system.",
+    combined: "Social uncertainty remains high while emotional braking is low, so rejection cues are interpreted under maximum threat. That coupling amplifies emotional spikes and leaves longer recovery tails after minor social events.",
+    neuro: {
+      regions: "Amygdala, Anterior Cingulate Cortex (ACC), Prefrontal Cortex (PFC)",
+      normal: "The ACC detects social 'errors'; the Amygdala generates an emotional signal; the PFC provides top-down regulation to 'brake' the response.",
+      adhd: "Reduced PFC inhibition allows the amygdala to fire at full volume without regulation.",
+      asd: "Hyper-sensitive Salience Network (ACC) registers social uncertainty as a high-level threat."
+    },
+    connects: ["interoception", "masking", "emotional-permanence", "continuity-of-self", "demand-avoidance", "executive", "social-inference", "inhibitory-control", "emotional-signal-decoding-latency"]
+  },
+  {
+    id: "emotional-permanence",
+    title: "Emotional Permanence",
+    source: "adhd",
+    brief: "Emotional connection can fade when people are not immediately present. This is not lack of care; the felt signal drops when the person is out of active context.",
+    adhd: "Working memory instability weakens active emotional holding. Care remains, but the feeling-state is harder to sustain without immediate cues.",
+    asd: "High social processing load and context changes can make emotional carryover less continuous between interactions.",
+    combined: "Emotional connection is genuine but less persistent when cues disappear. Recontact then requires emotional reloading, which can feel like distance or inconsistency.",
+    neuro: {
+      regions: "Default Mode Network (DMN), Hippocampus, Dorsolateral PFC",
+      normal: "Memory and social-emotional networks maintain felt connection to absent people with low effort.",
+      adhd: "Working-memory drops reduce active emotional continuity when external cues are absent.",
+      asd: "Context-dependent processing can reduce emotional carryover across transitions."
+    },
+    connects: ["rsd", "masking", "executive", "interest-cycle", "working-memory-reliability", "social-withdrawal-reachout-conflict", "social-repair-delay", "continuity-of-self"]
+  },
+  {
+    id: "continuity-of-self",
+    title: "Continuity of Self",
+    source: "both",
+    brief: "Your sense of being the same person across time can feel fragmented, especially across context changes, stress, and sleep disruption.",
+    adhd: "Time-fragmented memory and weak future-self simulation can make identity feel discontinuous across days.",
+    asd: "Context-specific social adaptation and high transition load can create siloed self-states that are hard to integrate.",
+    combined: "Self-continuity weakens when temporal, social, and state cues do not integrate. This fragmentation increases decision uncertainty and can reinforce night-time coherence seeking.",
+    neuro: {
+      regions: "Default Mode Network (DMN), Hippocampus, Dorsolateral PFC",
+      normal: "Autobiographical memory and self-referential networks maintain a stable cross-time identity model.",
+      adhd: "Working-memory volatility and temporal discounting reduce continuity of self-modeling across time horizons.",
+      asd: "Context-partitioned processing can make self-representation less integrated across social settings."
+    },
+    connects: ["emotional-permanence", "future-self-lag", "time-blindness", "working-memory-reliability", "sleep-wake-conflict", "decision-paralysis", "masking", "social-withdrawal-reachout-conflict"]
+  },
+  {
+    id: "masking",
+    title: "Masking",
+    source: "asd",
+    brief: "A learned survival strategy — building and performing socially acceptable scripts by observing neurotypical people. It often starts so early you can't distinguish the mask from the self.",
+    adhd: "The continuity-of-self problem means the mask isn't even consistent. Multiple masks for different contexts, and the fragmented sense of self means losing track of which layer is the performance. ADHD also depletes the cognitive resources masking needs to function.",
+    asd: "This is the primary driver. The autistic brain processes social behaviour through explicit conscious systems rather than intuitive ones — computing rather than feeling. That's why it's so draining. Every social interaction requires running complex software on hardware not designed for it.",
+    combined: "Social safety depends on masking accuracy while attentional and executive variability make mask stability unreliable. The mismatch raises energy cost and error fear, which erodes authenticity and accelerates burnout.",
+    neuro: {
+      regions: "Temporoparietal Junction (TPJ), Prefrontal Cortex (PFC), Mirror Neuron System",
+      normal: "Social interaction is typically intuitive, driven by the TPJ and Mirror Neurons for automatic empathy and mimicry.",
+      adhd: "Drains limited executive (PFC) resources faster, leading to 'mask fatigue' and impulsive lapses.",
+      asd: "Manual processing: The brain bypasses intuitive pathways and uses the PFC to consciously calculate social scripts."
+    },
+    connects: ["executive", "burnout", "emotional-permanence", "continuity-of-self", "interoception", "sensory", "social-tug-of-war", "social-inference"]
+  },
+  {
+    id: "social-inference",
+    title: "Social Inference Latency",
+    source: "asd",
+    brief: "Reading tone, intent, and subtext can require deliberate processing time. Meaning often lands a beat late, especially in fast group settings.",
+    adhd: "Rapid conversational pacing and distractibility reduce the time available for careful social decoding, increasing missed cues and repair burden.",
+    asd: "Social interpretation relies more on explicit analysis than automatic intuition. Nonverbal and contextual signals can be processed accurately, but slower and with higher cognitive cost.",
+    combined: "You may respond before full context resolves, then realise later what was implied. The delay creates replay loops, self-doubt, and extra masking pressure to avoid future misreads.",
+    neuro: {
+      regions: "Temporoparietal Junction (TPJ), Superior Temporal Sulcus (STS), Prefrontal Cortex (PFC), Anterior Cingulate Cortex (ACC)",
+      normal: "Social cues are integrated rapidly and mostly automatically into a coherent model of intent.",
+      adhd: "Inconsistent attentional capture causes partial cue uptake, so social inference must be reconstructed after the moment.",
+      asd: "Greater dependence on explicit inference pathways increases latency and effort during real-time social parsing."
+    },
+    connects: ["masking", "rsd", "social-tug-of-war", "alexithymia", "decision-paralysis", "emotional-permanence", "continuity-of-self", "emotional-signal-decoding-latency"]
+  },
+  {
+    id: "emotional-signal-decoding-latency",
+    title: "Emotional Signal Decoding Latency (Mechanism)",
+    source: "both",
+    brief: "The gap between feeling and knowing what you are feeling is delayed. Emotional data arrives, but interpretation and labeling trail behind the moment.",
+    adhd: "Rapid affect shifts and high emotional intensity can outpace decoding bandwidth, so responses happen before emotional categorization stabilizes.",
+    asd: "Emotional cue processing often relies on more explicit analysis and slower integration, especially under sensory or social load.",
+    combined: "You may feel overwhelmed first and understand later. This latency can drive misattunement, delayed repair, and post-event emotional replay.",
+    neuro: {
+      regions: "Insular Cortex (Insula), Anterior Cingulate Cortex (ACC), Amygdala, Prefrontal Cortex (PFC)",
+      normal: "Affective signals are translated into coherent emotional categories quickly enough to guide regulation in real time.",
+      adhd: "Fast arousal changes can saturate regulatory bandwidth, delaying accurate emotional labeling under pressure.",
+      asd: "Emotion categorization uses higher-effort pathways and can lag behind raw affective sensation in complex contexts."
+    },
+    connects: ["alexithymia", "interoception", "social-inference", "rsd", "emotional-permanence", "continuity-of-self", "social-tug-of-war", "decision-paralysis"]
+  },
+  {
+    id: "interoception",
+    title: "Interoception",
+    source: "both",
+    brief: "Impaired ability to sense your own internal body states — hunger, pain, temperature, emotions manifesting physically. Signals are delayed, muted, or confusing.",
+    adhd: "Attentional dysregulation means internal signals compete with external stimuli and often lose. You're not filtering body signals effectively — they get drowned out by whatever has attentional capture at the moment.",
+    asd: "The autistic nervous system processes interoceptive signals differently at a sensory-processing level. The signals themselves may be atypical — not just unattended to but genuinely different in how they register.",
+    combined: "Body-state signals are both weakly attended and harder to decode in real time. This delay pushes regulation actions late, increasing overload, pain, and decision friction.",
+    neuro: {
+      regions: "Insular Cortex (Insula), Anterior Cingulate Cortex (ACC)",
+      normal: "The Insula maps internal bodily states (hunger, heart rate) and sends signals to the ACC to drive behavior.",
+      adhd: "Attentional capture by external stimuli prevents the brain from noticing the Insula's 'quiet' internal signals.",
+      asd: "Atypical 'neural gain' in the Insula means signals are distorted, overwhelmingly loud, or too faint to register."
+    },
+    connects: ["rsd", "alexithymia", "burnout", "sensory", "executive", "proprioceptive-calibration", "morning-startup-lag", "musculoskeletal-strain", "emotional-signal-decoding-latency"]
+  },
+  {
+    id: "alexithymia",
+    title: "Alexithymia (Lived Attunement Gap)",
+    source: "asd",
+    brief: "A lived attunement expression: difficulty identifying and describing your own emotions in real time. Not an absence of feeling — you feel intensely, but labeling and interpretation lag.",
+    adhd: "Emotional dysregulation means feelings arrive at overwhelming intensity, which itself makes them harder to parse and name. The sheer volume of the emotional signal overloads the labelling system.",
+    asd: "The core mechanism. Autistic processing of emotional information often routes through different neural pathways — less automatic emotional categorisation, more effortful conscious processing needed to identify what you're feeling.",
+    combined: "Emotional intensity rises faster than labeling bandwidth, so felt experience outruns interpretation. The resulting ambiguity weakens regulation choices and increases post-event replay and self-doubt.",
+    neuro: {
+      regions: "Insula, Anterior Cingulate Cortex (ACC), Corpus Callosum",
+      normal: "Physical sensations are 'translated' into emotional labels in the ACC and shared across brain regions for processing.",
+      adhd: "Emotional flooding (Amygdala) overloads the ACC's ability to translate sensations into specific labels.",
+      asd: "Reduced connectivity between the Insula and language centers; the data 'bridge' for emotional labeling is less efficient."
+    },
+    connects: ["interoception", "rsd", "masking", "emotional-permanence", "continuity-of-self", "social-tug-of-war", "decision-paralysis", "emotional-signal-decoding-latency"]
+  },
+  {
+    id: "executive",
+    title: "Executive Integration Strain",
+    source: "adhd",
+    brief: "Far beyond 'being disorganised' — task initiation, task switching, emotional regulation, sequencing, planning. The brain's entire management system operating unreliably.",
+    adhd: "The primary driver. Prefrontal cortex underactivation means every management function — starting tasks, switching between them, holding sequences, regulating emotional responses — requires conscious effort rather than running automatically.",
+    asd: "Autistic executive function differences tend toward rigidity and difficulty with unexpected changes rather than the ADHD pattern of inconsistency. ASD adds demand for routine and predictability, making the ADHD chaos of executive function more distressing.",
+    combined: "Day-level function depends on executive consistency, while activation and control availability remain state-dependent. This reliability gap compounds across tasks, increasing distress, backlog pressure, and avoidance.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Basal Ganglia, Striatum",
+      normal: "The PFC acts as a CEO, using dopamine signaling in the Striatum to prioritize, initiate, and switch tasks.",
+      adhd: "Dopamine under-availability means the 'CEO' can't send a strong enough signal to trigger action or focus.",
+      asd: "Over-connectivity in local detail circuits vs under-connectivity in long-range planning circuits (big-picture difficulty)."
+    },
+    connects: ["demand-avoidance", "time-blindness", "burnout", "masking", "emotional-permanence", "continuity-of-self", "routine-novelty", "decision-paralysis", "monotropism", "sleep-wake-conflict", "inhibitory-control", "urgency-dependence", "transition-shock", "morning-startup-lag", "musculoskeletal-strain", "initiation-friction", "sequencing-prioritization", "working-memory-reliability", "attentional-gating", "future-self-lag", "interruption-reentry-friction", "language-retrieval-load", "occupational-volatility", "admin-avoidance-accumulation"]
+  },
+  {
+    id: "inhibitory-control",
+    title: "Response Inhibition / Impulse Control",
+    source: "adhd",
+    brief: "Thoughts and actions can launch before evaluation finishes. The challenge is not knowing the rule but delaying output long enough to apply it.",
+    adhd: "Reduced inhibitory gating in frontostriatal circuits makes stopping, pausing, and waiting harder under cognitive load or emotional arousal.",
+    asd: "When social or sensory load is high, the effort spent on manual processing can leave less bandwidth for last-second inhibition.",
+    combined: "You can understand social and practical consequences but still act before the brake engages. Afterwards, replay and self-criticism intensify masking and avoidance.",
+    neuro: {
+      regions: "Right Inferior Frontal Gyrus (rIFG), Pre-Supplementary Motor Area (pre-SMA), Basal Ganglia, Anterior Cingulate Cortex (ACC)",
+      normal: "Stop-signal networks suppress prepotent responses quickly when context changes.",
+      adhd: "Lower stop-signal efficiency delays inhibitory braking, especially in emotionally salient or high-speed contexts.",
+      asd: "Higher concurrent processing demand can reduce available control bandwidth for rapid inhibition."
+    },
+    connects: ["executive", "social-tug-of-war", "rsd", "demand-avoidance", "stimming-conflict", "decision-paralysis", "masking"]
+  },
+  {
+    id: "working-memory-reliability",
+    title: "Working Memory Reliability",
+    source: "adhd",
+    brief: "Active mental holding is unstable, so goals, context, and social-emotional threads can drop out of awareness even when they matter deeply.",
+    adhd: "Working memory capacity fluctuates with arousal and load. Information can vanish between intention and action, creating inconsistent follow-through.",
+    asd: "Context-switch costs amplify the impact of each memory drop, because rebuilding state requires extra cognitive reconstruction.",
+    combined: "You may care and intend, but the active thread disappears at critical moments. This can look like inconsistency to others and identity fragmentation to you.",
+    neuro: {
+      regions: "Dorsolateral Prefrontal Cortex (DLPFC), Parietal Cortex, Default Mode Network (DMN)",
+      normal: "Working memory keeps goals and relevant context online long enough to sequence behavior over time.",
+      adhd: "Reduced frontoparietal stability causes rapid memory decay and frequent context loss.",
+      asd: "Higher transition and detail-load can consume available working memory bandwidth faster."
+    },
+    connects: ["emotional-permanence", "continuity-of-self", "executive", "decision-paralysis", "time-blindness", "social-tug-of-war", "future-self-lag", "sequencing-prioritization"]
+  },
+  {
+    id: "future-self-lag",
+    title: "Future-Self Simulation Lag",
+    source: "adhd",
+    brief: "The future is cognitively understood but weakly felt, so future needs and consequences have low motivational weight in the present.",
+    adhd: "Temporal discounting and weak prospective simulation reduce emotional salience for long-horizon outcomes.",
+    asd: "When uncertainty is high, future simulation can become rigid or threat-focused, increasing avoidance rather than planning.",
+    combined: "Future-you can feel abstract and discontinuous, making commitment, pacing, and prevention harder until urgency forces action.",
+    neuro: {
+      regions: "Default Mode Network (DMN), Hippocampus, Ventromedial Prefrontal Cortex (vmPFC)",
+      normal: "Prospection links present choices to emotionally meaningful future outcomes.",
+      adhd: "Future simulation has lower dopaminergic salience, so immediate cues dominate action selection.",
+      asd: "Prediction uncertainty can narrow future models and reduce flexible scenario testing."
+    },
+    connects: ["time-blindness", "working-memory-reliability", "decision-paralysis", "sleep-wake-conflict", "urgency-dependence", "continuity-of-self"]
+  },
+  {
+    id: "initiation-friction",
+    title: "Initiation Friction",
+    source: "adhd",
+    brief: "Starting is disproportionately costly. You may know what to do and still feel a high activation barrier before action can begin.",
+    adhd: "Low baseline activation and weak task salience create startup drag until novelty, movement, or urgency boosts arousal.",
+    asd: "Transition cost and uncertainty can raise the startup threshold further, especially in noisy or unpredictable contexts.",
+    combined: "The task is visible, but ignition fails. Delay accumulates, shame rises, and eventual urgency-based starts become the default pattern.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Basal Ganglia, Locus Coeruleus",
+      normal: "Goal representations convert into action with modest cognitive and motor activation cost.",
+      adhd: "Insufficient catecholamine drive increases effort needed to cross initiation threshold.",
+      asd: "State-transition friction and threat-monitoring increase startup energy requirements."
+    },
+    connects: ["demand-avoidance", "executive", "urgency-dependence", "burnout", "morning-startup-lag", "reward-volatility", "sequencing-prioritization"]
+  },
+  {
+    id: "sequencing-prioritization",
+    title: "Sequencing & Prioritization Drift",
+    source: "both",
+    brief: "Tasks compete at similar salience, so deciding what comes first is slow and unstable, especially when many constraints are active.",
+    adhd: "Top-down ranking is effortful and can collapse under load, flattening task hierarchies into a same-priority blur.",
+    asd: "Detail-rich processing increases variable count, making prioritization trees deeper and harder to prune quickly.",
+    combined: "You may over-plan, re-order repeatedly, or freeze while trying to pick the 'right' next step. Execution starts late and drains fast.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Anterior Cingulate Cortex (ACC), Parietal Cortex",
+      normal: "Executive networks rank options and maintain stable action order with low overhead.",
+      adhd: "Unstable control signals weaken prioritization and sequence retention.",
+      asd: "High detail throughput expands decision trees and slows hierarchical pruning."
+    },
+    connects: ["decision-paralysis", "executive", "working-memory-reliability", "time-blindness", "demand-avoidance", "initiation-friction"]
+  },
+  {
+    id: "attentional-gating",
+    title: "Attentional Gating / Salience Filtering",
+    source: "adhd",
+    brief: "Filtering what deserves attention vs what can be ignored is inconsistent, causing rapid salience shifts and fragmented focus.",
+    adhd: "Bottom-up salience capture is high and top-down gating is unstable, so irrelevant stimuli can repeatedly hijack task control.",
+    asd: "When sensory prediction load is high, more incoming variation is treated as behaviorally relevant, increasing gating demand.",
+    combined: "Focus is effortful because the gate keeps reopening. Attention is repeatedly pulled to novelty, noise, and unresolved signals.",
+    neuro: {
+      regions: "Thalamus, Frontoparietal Attention Network, Salience Network",
+      normal: "Thalamocortical gating suppresses low-priority input while sustained networks protect task focus.",
+      adhd: "Weak top-down modulation permits frequent salience intrusions and unstable sustained attention.",
+      asd: "Higher prediction-error sensitivity can increase the volume of signals competing for priority."
+    },
+    connects: ["sensory", "monotropism", "social-inference", "reward-volatility", "interoception", "executive", "time-blindness", "decision-paralysis"]
+  },
+  {
+    id: "burnout",
+    title: "Autistic Burnout",
+    source: "asd",
+    brief: "Pervasive exhaustion and loss of skills from cumulative load. Things you could do before become significantly harder or temporarily impossible. The compensating system ran out.",
+    adhd: "ADHD contributes additional cognitive load — every task requiring more effort, every regulation requiring conscious management — which accelerates the depletion that leads to burnout. The ADHD brain is burning more fuel per task even before masking and sensory costs.",
+    asd: "The primary driver. The cumulative cost of navigating a world not built for your neurology — masking, sensory management, social computation, routine disruption — without adequate recovery. Late-diagnosed people are especially vulnerable because they've been compensating without knowing.",
+    combined: "Masking and sensory load set a high baseline drain while executive compensation adds continuous overhead. Running both systems together depletes reserves faster than recovery can restore them, producing chronic burnout risk.",
+    neuro: {
+      regions: "HPA Axis (Stress System), Prefrontal Cortex, Amygdala",
+      normal: "The HPA axis manages stress with cortisol; rest restores neural resources and PFC regulatory capacity.",
+      adhd: "Chronic 'cognitive overhead' prevents the nervous system from ever reaching a true state of recovery.",
+      asd: "Neural exhaustion: Chronic activation of the threat response leads to a total collapse of compensatory PFC mechanisms."
+    },
+    connects: ["masking", "sensory", "executive", "interoception", "demand-avoidance", "sleep-wake-conflict", "routine-novelty", "stimming-conflict", "transition-shock", "urgency-dependence", "reward-volatility", "sensory-prediction-load", "proprioceptive-calibration", "morning-startup-lag", "musculoskeletal-strain"]
+  },
+  {
+    id: "demand-avoidance",
+    title: "Demand Avoidance",
+    source: "both",
+    brief: "Intense visceral resistance to demands — including self-imposed ones. Not oppositional behaviour, but a nervous system response where anything framed as obligation triggers avoidance.",
+    adhd: "Task initiation difficulty is already present. The dopamine system doesn't reliably generate motivation for non-novel, non-urgent tasks. 'Should' doesn't produce the neurochemical push needed to start.",
+    asd: "The autonomic nervous system response to perceived demands — a threat reaction to loss of autonomy that operates below conscious control. Reframing an obligation as a choice can release the block entirely because the resistance targets the demand framing, not the activity.",
+    combined: "Initiation cost and threat appraisal stack into a high-friction start state where demands feel aversive before work begins. Shame then reinforces avoidance, making the next initiation attempt even harder.",
+    neuro: {
+      regions: "Amygdala, Basal Ganglia (Avoidance Pathways)",
+      normal: "The brain evaluates tasks; if perceived as beneficial, it triggers approach behavior; if dangerous, avoidance.",
+      adhd: "Dysfunctional reward signaling makes 'low-dopamine' tasks feel physically impossible to start.",
+      asd: "The Amygdala misinterprets 'loss of autonomy' as a literal threat to safety, triggering an involuntary freeze/flight response."
+    },
+    connects: ["executive", "rsd", "burnout", "emotional-permanence", "continuity-of-self", "decision-paralysis", "routine-novelty", "urgency-dependence", "transition-shock", "initiation-friction", "admin-avoidance-accumulation"]
+  },
+  {
+    id: "sensory",
+    title: "Sensory Processing",
+    source: "both",
+    brief: "Your environment affects your capacity more than you realise. Every sense can be affected, and tolerance fluctuates with your overall state — tolerable when rested, unbearable when depleted.",
+    adhd: "Attentional control over sensory filtering is inconsistent. The neurotypical brain automatically filters background noise, clothing texture, ambient light. With ADHD, that filter is unreliable — sometimes everything gets through at once.",
+    asd: "The sensory processing differences themselves — hypersensitivity, hyposensitivity, or both fluctuating. The autistic nervous system registers sensory input at different thresholds, and these thresholds shift based on overall load and state.",
+    combined: "Sensory gain is high while filtering stability is low, so ordinary environments become unpredictably costly. This hidden load consumes bandwidth that would otherwise support social, cognitive, and emotional regulation.",
+    neuro: {
+      regions: "Thalamus, Primary Sensory Cortices",
+      normal: "The Thalamus acts as a 'gatekeeper,' filtering out irrelevant sensory input before it reaches the conscious brain.",
+      adhd: "Weak gating: The Thalamus fails to filter, meaning background noise and main signals are processed at the same priority.",
+      asd: "Hyper-responsive neurons: The sensory cortex itself registers signals with more intensity, often reaching the threshold of pain."
+    },
+    connects: ["burnout", "masking", "interoception", "executive", "stimming-conflict", "sleep-wake-conflict", "sensory-prediction-load", "proprioceptive-calibration", "attentional-gating", "shutdown-latency", "language-retrieval-load", "body-needs-neglect"]
+  },
+  {
+    id: "sensory-prediction-load",
+    title: "Sensory Prediction Uncertainty",
+    source: "asd",
+    brief: "The nervous system struggles to predict incoming sensory change, so neutral environments can still feel unstable or effortful.",
+    adhd: "Attention shifts and filtering inconsistency increase surprise frequency, so unexpected micro-changes steal focus and force repeated reorientation.",
+    asd: "Predictive processing for sensory input is less forgiving of mismatch. Small deviations in sound, texture, timing, or social atmosphere can register as high-cost uncertainty.",
+    combined: "You spend energy pre-monitoring for sensory drift while also being interrupted by it. This raises baseline threat, reduces flexibility, and makes transitions or group environments disproportionately costly.",
+    neuro: {
+      regions: "Thalamus, Insular Cortex (Insula), Cerebellum, Amygdala",
+      normal: "Prediction systems dampen expected input and highlight true novelty so most background variation stays low effort.",
+      adhd: "Inconsistent gating allows more unfiltered novelty to compete for salience, increasing prediction error load.",
+      asd: "Higher precision weighting on sensory prediction errors makes minor mismatches feel urgent and harder to ignore."
+    },
+    connects: ["sensory", "transition-shock", "burnout", "sleep-wake-conflict", "stimming-conflict", "decision-paralysis", "interoception", "proprioceptive-calibration"]
+  },
+  {
+    id: "proprioceptive-calibration",
+    title: "Proprioceptive Uncertainty (Body-Map Ambiguity)",
+    source: "asd",
+    brief: "Body-in-space signals can be noisy or delayed, so posture, force, and movement planning consume more conscious effort than expected.",
+    adhd: "Inconsistent attention and motor pacing can make position/force feedback even less stable, increasing clumsiness, object-dropping, and startup friction for physical tasks.",
+    asd: "Proprioceptive processing differences can distort how much pressure, movement, or body alignment is needed to feel regulated and coordinated.",
+    combined: "You may need extra movement, pressure, or repetition to feel physically 'online'. When proprioceptive certainty is low, transitions and task initiation feel physically sticky, and self-regulation costs rise across the day.",
+    neuro: {
+      regions: "Cerebellum, Somatosensory Cortex, Basal Ganglia, Insular Cortex (Insula)",
+      normal: "Proprioceptive feedback continuously updates motor plans so movement and posture feel automatic and low effort.",
+      adhd: "Variable attentional and motor control adds noise to feedback loops, reducing movement consistency over time.",
+      asd: "Atypical sensory integration can make pressure/position signals less intuitive, requiring deliberate recalibration."
+    },
+    connects: ["interoception", "sensory", "stimming-conflict", "transition-shock", "sleep-wake-conflict", "burnout", "executive", "decision-paralysis", "sensory-prediction-load", "morning-startup-lag", "musculoskeletal-strain"]
+  },
+  {
+    id: "musculoskeletal-strain",
+    title: "Cumulative Musculoskeletal Load",
+    source: "both",
+    brief: "When body-map and internal-state signals are unclear, movement often relies on compensation. The wrong muscles overwork, support muscles under-engage, and joint loading drifts over time.",
+    adhd: "Variable pacing, inconsistent warm-up, and bursty effort can cause abrupt load spikes. Motor output is often all-or-nothing, increasing overuse and strain risk.",
+    asd: "Proprioceptive uncertainty and tonic bracing can alter posture and force distribution. Repetitive compensatory patterns can become rigid and hard to unwind.",
+    combined: "Low mind-body coupling can produce uneven muscle development and persistent biomechanical compensation. Over time this raises risk for hip, knee, back, ankle, and soft-tissue injuries, especially under fatigue.",
+    neuro: {
+      regions: "Cerebellum, Somatosensory Cortex, Primary Motor Cortex, Basal Ganglia, Insular Cortex (Insula)",
+      normal: "Motor planning integrates proprioception and interoception so force, posture, and joint alignment adjust smoothly to task demands.",
+      adhd: "Inconsistent activation and pacing create variable motor output, reducing movement efficiency and increasing accidental overload.",
+      asd: "Atypical sensory integration can keep compensatory motor patterns active longer, with higher baseline tension and slower recalibration."
+    },
+    connects: ["proprioceptive-calibration", "interoception", "stimming-conflict", "transition-shock", "sleep-wake-conflict", "burnout", "executive", "decision-paralysis"]
+  },
+  {
+    id: "morning-startup-lag",
+    title: "State-Activation Lag",
+    source: "adhd",
+    brief: "Function does not switch on at wake time. Many systems need a predictable ramp window before cognition, motor control, and emotional regulation feel online.",
+    adhd: "Sleep inertia, delayed catecholamine ramp, and low baseline activation make early initiation slow. The brain may need novelty, movement, or urgency before executive access stabilizes.",
+    asd: "Sensory load and transition cost at wake can lengthen the ramp. If environmental input is abrupt, regulation is consumed before useful activation is reached.",
+    combined: "You can be awake but not operational. The day starts with a boot sequence: body calibration, sensory settling, and cognitive spin-up. Compressing this window often worsens decisions, output, and recovery later.",
+    neuro: {
+      regions: "Suprachiasmatic Nucleus (SCN), Prefrontal Cortex (PFC), Basal Ganglia, Locus Coeruleus, Cerebellum, Insular Cortex (Insula)",
+      normal: "Circadian cues, arousal chemistry, and executive systems align quickly after waking, enabling smooth transition into goal-directed behavior.",
+      adhd: "Arousal and executive networks come online unevenly, creating a prolonged gap between wakefulness and functional activation.",
+      asd: "Higher sensory and transition load at wake can consume control bandwidth, delaying full operational state."
+    },
+    connects: ["sleep-wake-conflict", "executive", "time-blindness", "interoception", "proprioceptive-calibration", "decision-paralysis", "burnout", "urgency-dependence", "transition-shock", "musculoskeletal-strain", "initiation-friction", "attentional-gating"]
+  },
+  {
+    id: "time-blindness",
+    title: "Time Blindness",
+    source: "adhd",
+    brief: "A genuinely different perception of time — not poor time management, but a subjective experience where time doesn't flow at a consistent rate. It's either now or not-now.",
+    adhd: "The primary mechanism. Research suggests ADHD involves fundamentally different temporal processing. Five minutes and fifty minutes can feel identical. Future events don't feel real until imminent. Planning doesn't carry emotional weight because the future doesn't feel like a real destination.",
+    asd: "ASD doesn't typically cause time blindness directly, but the need for predictability and routine can be understood as a compensatory strategy for it — if you can't feel time naturally, external structure becomes critical. When that structure breaks, the disorientation is doubled.",
+    combined: "Internal time estimation is unreliable while predictability needs remain high. Structure can temporarily compensate, but under load the timing scaffold collapses and distress escalates quickly.",
+    neuro: {
+      regions: "Cerebellum, Basal Ganglia, Prefrontal Cortex",
+      normal: "A dopamine-modulated 'internal clock' in the Basal Ganglia/Cerebellum creates a consistent sense of duration.",
+      adhd: "Jittery clock: Inconsistent dopamine pulses mean the brain's internal timer speeds up or slows down unpredictably.",
+      asd: "Neural compensation: Reliance on rigid external routines to make up for the lack of a reliable internal 'pulse' of time."
+    },
+    connects: ["emotional-permanence", "continuity-of-self", "executive", "demand-avoidance", "sleep-wake-conflict", "routine-novelty", "decision-paralysis", "urgency-dependence", "morning-startup-lag", "future-self-lag"]
+  },
+  {
+    id: "urgency-dependence",
+    title: "Urgency-Gated Activation",
+    source: "adhd",
+    brief: "Action often starts only when stakes become immediate. Urgency can temporarily unlock capacity that was inaccessible minutes earlier.",
+    adhd: "Low baseline dopamine makes distant rewards weak motivators. Imminent deadlines increase noradrenergic and dopaminergic drive, producing a short-lived activation spike.",
+    asd: "Sudden urgency clashes with a need for predictability and careful sequencing, increasing stress and post-task crash risk.",
+    combined: "Activation arrives late through urgency spikes rather than steady control, creating feast-or-famine output patterns. Short-term success reinforces the pattern while accumulating burnout and sleep debt.",
+    neuro: {
+      regions: "Locus Coeruleus-Norepinephrine System, Prefrontal Cortex (PFC), Nucleus Accumbens (NAc), Basal Ganglia",
+      normal: "Motivation can be sustained across long horizons without requiring acute threat or urgency.",
+      adhd: "Activation often depends on urgency-driven catecholamine spikes rather than steady top-down control.",
+      asd: "Rapid, unplanned activation creates transition stress and can destabilize regulation routines."
+    },
+    connects: ["executive", "time-blindness", "demand-avoidance", "burnout", "sleep-wake-conflict", "decision-paralysis", "routine-novelty", "reward-volatility", "future-self-lag", "initiation-friction"]
+  },
+  {
+    id: "reward-volatility",
+    title: "Reward Volatility (Interest-Based Activation)",
+    source: "adhd",
+    brief: "Motivation can swing sharply based on novelty, emotional relevance, or urgency rather than objective importance.",
+    adhd: "Phasic dopamine responses are high to salient novelty and low to routine payoff. This creates feast-or-famine activation where interest, not intention, determines energy access.",
+    asd: "A preference for predictability and depth can conflict with sudden reward swings, making planning feel unstable even when goals are clear.",
+    combined: "Motivation tracks salience volatility rather than objective priority, so equally important tasks receive unequal energy access. This state-dependent inconsistency is often misread as character failure instead of regulation dynamics.",
+    neuro: {
+      regions: "Nucleus Accumbens (NAc), Ventral Tegmental Area (VTA), Prefrontal Cortex (PFC), Basal Ganglia",
+      normal: "Reward valuation remains relatively stable, allowing sustained effort across low-novelty tasks.",
+      adhd: "Rapid reward revaluation causes activation to track salience spikes instead of long-horizon priorities.",
+      asd: "When stable routines are disrupted by volatile salience shifts, regulation costs and transition stress increase."
+    },
+    connects: ["executive", "urgency-dependence", "demand-avoidance", "interest-cycle", "routine-novelty", "sleep-wake-conflict", "decision-paralysis", "burnout"]
+  },
+  {
+    id: "routine-novelty",
+    title: "Routine-Novelty Paradox",
+    source: "both",
+    brief: "The same routine that keeps you emotionally safe can also feel intolerably boring. Stability and stimulation pull in opposite directions all day.",
+    adhd: "The reward system under-values repetitive tasks, so familiar routines rapidly lose motivational pull. Once novelty drops, initiation cost spikes and boredom feels physically agitating.",
+    asd: "Predictability lowers threat and cognitive load. Repetition creates safety, reduces transition stress, and protects against overwhelm.",
+    combined: "Regulation depends on predictability while engagement depends on novelty, creating competing control demands. Either extreme destabilizes function, so the system oscillates between anxiety and under-stimulated escape.",
+    neuro: {
+      regions: "Nucleus Accumbens (NAc), Basal Ganglia & Striatum, Amygdala, Prefrontal Cortex (PFC)",
+      normal: "Habit circuits and reward valuation are balanced so predictable structure can feel both safe and sufficiently rewarding.",
+      adhd: "Lower tonic dopamine in frontostriatal pathways makes low-novelty routines feel unrewarding, so the brain seeks stimulation elsewhere.",
+      asd: "Threat and uncertainty systems place a premium on sameness, so routine becomes a primary anxiety-regulation tool."
+    },
+    connects: ["executive", "demand-avoidance", "burnout", "time-blindness", "sleep-wake-conflict", "interest-cycle", "transition-shock", "reward-volatility"]
+  },
+  {
+    id: "transition-shock",
+    title: "Transition Shock & Cognitive Rigidity",
+    source: "asd",
+    brief: "Switching contexts can feel physically and cognitively jarring, even when the next task is wanted. The issue is transition cost, not willingness.",
+    adhd: "Frequent interruptions force repeated context resets, multiplying transition overhead and leaving tasks half-open.",
+    asd: "State changes require re-building predictability maps. Unexpected transitions can trigger threat responses and temporary performance drop.",
+    combined: "ADHD injects constant switching pressure while ASD raises the cost of each switch. Day structure becomes fragile, and recovery time between transitions expands.",
+    neuro: {
+      regions: "Anterior Cingulate Cortex (ACC), Insular Cortex (Insula), Basal Ganglia, Cerebellum",
+      normal: "Task-set shifting updates priorities smoothly with minimal friction.",
+      adhd: "Attention shifts happen rapidly and often reactively, increasing context-switch frequency.",
+      asd: "Prediction and salience systems treat sudden shifts as high-cost uncertainty, producing transition stress."
+    },
+    connects: ["routine-novelty", "executive", "monotropism", "burnout", "sensory", "time-blindness", "demand-avoidance", "sensory-prediction-load", "proprioceptive-calibration", "sleep-wake-conflict", "morning-startup-lag"]
+  },
+  {
+    id: "monotropism",
+    title: "Monotropism & The Flow-State War",
+    source: "both",
+    brief: "You can enter deep, immersive focus tunnels, but staying there is unreliable. The mind wants depth while distractibility keeps puncturing flow.",
+    adhd: "Internal and external distractors trigger frequent context switching. Even when motivation is high, competing stimuli can hijack attention before work consolidates.",
+    asd: "Monotropic attention creates powerful immersion and high-quality output, but transitions out of the tunnel are effortful and often distressing.",
+    combined: "Depth-focused attention forms strongly, but unstable salience gating repeatedly breaks tunnel continuity. Repeated interruption produces near-mastery without consolidation and increases frustration over time.",
+    neuro: {
+      regions: "Default Mode Network (DMN), Prefrontal Cortex (PFC), Anterior Cingulate Cortex (ACC), Cerebellum",
+      normal: "Attention systems flexibly sustain focus while switching when needed without major cognitive friction.",
+      adhd: "Weak attentional gating increases spontaneous task-switching and noisy salience shifts, making deep work fragile.",
+      asd: "Narrow, high-gain attentional channels support deep tunnel focus, but transition costs are high when disengaging."
+    },
+    connects: ["executive", "interest-cycle", "decision-paralysis", "burnout", "time-blindness", "transition-shock", "attentional-gating"]
+  },
+  {
+    id: "decision-paralysis",
+    title: "Decision Paralysis (Bottom-Up Processing)",
+    source: "both",
+    brief: "Small decisions can become cognitively expensive because every detail arrives as relevant at once, without an automatic priority order.",
+    adhd: "Executive sequencing and prioritization are effortful, so even simple choices can stall when there is no immediate reward signal.",
+    asd: "Bottom-up processing treats many details as equally salient. Without fast top-down filtering, the comparison space becomes huge.",
+    combined: "Variable count exceeds prioritization capacity, so choices remain flat and hard to sequence. Weak future-self modeling and noisy body cues prolong uncertainty, leading to avoidance and shame cycles.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Anterior Cingulate Cortex (ACC), Thalamus",
+      normal: "Top-down control suppresses irrelevant detail so priorities emerge quickly and action follows.",
+      adhd: "PFC under-activation weakens ranking and sequencing, so task trees stay flat and hard to execute.",
+      asd: "Reduced automatic salience hierarchy increases raw detail throughput, expanding the decision search space."
+    },
+    connects: ["executive", "demand-avoidance", "routine-novelty", "social-tug-of-war", "time-blindness", "urgency-dependence", "reward-volatility", "sensory-prediction-load", "sequencing-prioritization", "working-memory-reliability", "future-self-lag"]
+  },
+  {
+    id: "social-tug-of-war",
+    title: "Social Tug-of-War (Impulse vs Script)",
+    source: "both",
+    brief: "Social behavior runs two conflicting systems: cautious scripted rules and urgent impulse expression.",
+    adhd: "Impulsivity and verbal urgency drive interrupting, tangent-sharing, and blurting before social timing can be evaluated.",
+    asd: "Manual social scripts emphasize accuracy, turn-taking, and error avoidance, often requiring deliberate inhibition.",
+    combined: "Impulse expression and rule-monitoring run in conflict, so timing errors are followed by immediate self-correction and threat spikes. This oscillation raises social fatigue and reduces confidence in spontaneous interaction.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Temporoparietal Junction (TPJ), Amygdala, Anterior Cingulate Cortex (ACC)",
+      normal: "Social intuition and impulse control co-regulate expression, timing, and context.",
+      adhd: "Reduced inhibitory control allows response impulses to bypass social timing filters.",
+      asd: "Greater reliance on explicit social rule processing increases cognitive load and post-error stress monitoring."
+    },
+    connects: ["masking", "rsd", "alexithymia", "emotional-permanence", "continuity-of-self", "decision-paralysis", "inhibitory-control", "social-inference", "social-repair-delay", "social-withdrawal-reachout-conflict"]
+  },
+  {
+    id: "stimming-conflict",
+    title: "Stimming (Regulation vs Stimulation)",
+    source: "both",
+    brief: "Stims can calm overload and boost under-stimulation at the same time, creating mixed relief and irritation.",
+    adhd: "Motor and vocal stims increase arousal, helping sustain alertness, focus, and dopamine tone during low-interest tasks.",
+    asd: "Repetitive movement and sensory patterns provide self-regulation, predictability, and down-regulation during overwhelm.",
+    combined: "The same stim can be regulatory or aversive depending on current thresholds and load state. Rapid threshold shifts convert a helpful strategy into a new source of dysregulation.",
+    neuro: {
+      regions: "Cerebellum, Basal Ganglia & Striatum, Insular Cortex (Insula), Thalamus",
+      normal: "Sensorimotor loops help tune arousal and maintain comfortable regulation ranges.",
+      adhd: "Arousal-seeking behavior recruits motor loops to raise stimulation when cortical alertness dips.",
+      asd: "Repetitive sensorimotor input stabilizes prediction and reduces uncertainty-driven stress in sensory systems."
+    },
+    connects: ["sensory", "interoception", "burnout", "executive", "sleep-wake-conflict", "sensory-prediction-load", "proprioceptive-calibration", "musculoskeletal-strain"]
+  },
+  {
+    id: "interest-cycle",
+    title: "Interest Cycle Instability",
+    source: "both",
+    brief: "Long-arc passion and short dopamine sprints can coexist, but they often compete for the same limited energy and follow-through.",
+    adhd: "Novelty-driven hyperfixations surge fast and can fade just as quickly once reward drops or friction rises.",
+    asd: "Special interests build deep, stable expertise over long periods and provide identity, joy, and regulation.",
+    combined: "High-value engagement and novelty-chasing compete for the same limited persistence resources. Investment outruns consolidation, leaving unfinished projects and shame that obscures genuine long-term interest.",
+    neuro: {
+      regions: "Nucleus Accumbens (NAc), Default Mode Network (DMN), Prefrontal Cortex (PFC), Basal Ganglia & Striatum",
+      normal: "Reward valuation, identity narrative, and planning systems align to support sustained long-term interests.",
+      adhd: "Reward prediction decays quickly with familiarity, reducing persistence unless novelty or urgency is restored.",
+      asd: "High-value interest channels remain stable and deeply motivating, supporting prolonged learning and pattern acquisition."
+    },
+    connects: ["monotropism", "routine-novelty", "executive", "emotional-permanence", "continuity-of-self", "burnout", "reward-volatility", "occupational-volatility"]
+  },
+  {
+    id: "sleep-wake-conflict",
+    title: "Circadian Regulation Conflict",
+    source: "both",
+    brief: "Night can feel like the only sensory-manageable, interruption-free window, but it also becomes the prime time for dopamine-seeking and delayed sleep.",
+    adhd: "Delayed sleep phase and nighttime reward-seeking make disengaging from stimulation difficult, even when exhaustion is extreme.",
+    asd: "Sensory discomfort, cognitive over-processing, and arousal from daily masking make sleep onset fragile and easily disrupted.",
+    combined: "Night provides the first coherent low-noise window, so stimulation and catch-up behavior delay sleep onset. Recovery debt then lowers daytime tolerance and reinforces the next night’s delay cycle.",
+    neuro: {
+      regions: "Suprachiasmatic Nucleus (SCN), Prefrontal Cortex (PFC), Nucleus Accumbens (NAc), Cerebellum",
+      normal: "Circadian timing aligns arousal, reward, and sleep pressure so shutdown and wake-up are predictable.",
+      adhd: "Circadian delay and reward-driven late-night behavior push sleep onset later while weakening morning executive control.",
+      asd: "Heightened sensory and cognitive arousal at night raises the threshold for sleep initiation and continuity."
+    },
+    connects: ["time-blindness", "burnout", "executive", "sensory", "routine-novelty", "stimming-conflict", "reward-volatility", "sensory-prediction-load", "proprioceptive-calibration", "transition-shock", "morning-startup-lag", "musculoskeletal-strain", "body-needs-neglect", "shutdown-latency", "chronic-pain-amplification", "conditioning-deconditioning-swing"]
+  },
+  {
+    id: "interruption-reentry-friction",
+    title: "Interruption-Reentry Friction",
+    source: "both",
+    brief: "After interruptions, returning to the original task can feel disproportionately hard, even when motivation is still present.",
+    adhd: "Attention is captured quickly by new stimuli, and context traces decay fast after switching.",
+    asd: "Reconstructing the previous task-state requires high cognitive reloading and transition energy.",
+    combined: "Small interruptions create a large restart tax, so tasks fragment and completion reliability drops across the day.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Anterior Cingulate Cortex (ACC), Default Mode Network (DMN)",
+      normal: "Task context is rapidly reloaded after interruption, allowing smooth re-entry.",
+      adhd: "Context maintenance weakens during switches, increasing restart latency.",
+      asd: "Higher transition costs raise the effort needed to rebuild previous task state."
+    },
+    connects: ["executive", "working-memory-reliability", "transition-shock", "initiation-friction", "decision-paralysis", "burnout", "occupational-volatility", "monotropism"]
+  },
+  {
+    id: "shutdown-latency",
+    title: "Shutdown Latency",
+    source: "both",
+    brief: "Overload often becomes clear only after a delay, and recovery can take longer than expected once shutdown begins.",
+    adhd: "State changes are detected late when attention is externally captured, so limits are crossed before corrective action starts.",
+    asd: "Cumulative sensory/social load can trigger abrupt nervous-system withdrawal with prolonged recovery windows.",
+    combined: "You can look functional until a delayed cliff-drop in capacity. Recovery then takes longer than expected because the load exceeded limits before it was recognized.",
+    neuro: {
+      regions: "Insular Cortex (Insula), Amygdala, HPA Axis, Prefrontal Cortex (PFC)",
+      normal: "Rising stress is detected early enough for graduated regulation.",
+      adhd: "Late detection and inconsistent regulation increase overshoot risk.",
+      asd: "Higher baseline load and sensory threat sensitivity increase shutdown likelihood and duration."
+    },
+    connects: ["burnout", "sensory", "sleep-wake-conflict", "body-needs-neglect", "social-withdrawal-reachout-conflict", "chronic-pain-amplification", "emotional-signal-decoding-latency"]
+  },
+  {
+    id: "social-repair-delay",
+    title: "Social Repair Delay",
+    source: "both",
+    brief: "You notice that repair is needed but struggle to initiate it in time, despite wanting the relationship to feel okay again.",
+    adhd: "Prospective memory drops and initiation friction delay follow-up messages or clarifications.",
+    asd: "Uncertainty about phrasing and social timing raises error-cost and blocks action.",
+    combined: "Repair intent is genuine, but execution lags. Even with a strong wish to reconnect, delay increases ambiguity and makes repair harder.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Temporoparietal Junction (TPJ), Amygdala, Anterior Cingulate Cortex (ACC)",
+      normal: "Social errors are repaired quickly via low-cost initiation and flexible inference.",
+      adhd: "Execution delay and context drop reduce repair follow-through.",
+      asd: "High social uncertainty increases planning load and message inhibition."
+    },
+    connects: ["social-withdrawal-reachout-conflict", "rsd", "social-inference", "masking", "emotional-permanence", "continuity-of-self", "working-memory-reliability", "relationship-trust-erosion"]
+  },
+  {
+    id: "social-withdrawal-reachout-conflict",
+    title: "Social Withdrawal Despite Need for Connection",
+    source: "both",
+    brief: "A deep need to connect can coexist with shutdown, fear, and initiation blocks that lead to withdrawal instead.",
+    adhd: "Initiation friction and reply anxiety delay outreach until the social thread feels harder to restart.",
+    asd: "Post-interaction processing load and threat sensitivity can push protective retreat even when attachment need is high.",
+    combined: "You can deeply want connection and still avoid contact in the same moment. That mismatch creates loneliness, guilt, and larger re-entry barriers over time.",
+    neuro: {
+      regions: "Amygdala, Default Mode Network (DMN), Prefrontal Cortex (PFC)",
+      normal: "Attachment motivation and social action remain reasonably coupled.",
+      adhd: "Action initiation can fail even when motivation is present.",
+      asd: "Social threat and processing costs can override approach drives."
+    },
+    connects: ["rsd", "social-repair-delay", "emotional-permanence", "continuity-of-self", "masking", "burnout", "shutdown-latency", "relationship-trust-erosion"]
+  },
+  {
+    id: "language-retrieval-load",
+    title: "Language Retrieval Under Load",
+    source: "both",
+    brief: "Word-finding and coherent expression degrade under stress, overload, or rapid social pace.",
+    adhd: "Working memory drops and rapid salience shifts disrupt verbal sequencing.",
+    asd: "High processing load can reduce access to fluent language pathways in demanding contexts.",
+    combined: "You may know exactly what you mean but lose timely access to language when stakes or load are highest.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Broca/Wernicke Language Networks, Anterior Cingulate Cortex (ACC)",
+      normal: "Language retrieval remains stable across moderate stress.",
+      adhd: "Task-state instability disrupts lexical retrieval and sequencing.",
+      asd: "Load-sensitive processing can reduce verbal output efficiency under pressure."
+    },
+    connects: ["social-tug-of-war", "social-inference", "masking", "shutdown-latency", "executive", "working-memory-reliability", "occupational-volatility"]
+  },
+  {
+    id: "body-needs-neglect",
+    title: "Body-Needs Neglect Cycles",
+    source: "both",
+    brief: "Food, hydration, bathroom, movement, and rest cues are noticed late or postponed, then become crisis-level needs.",
+    adhd: "Attention lock and task momentum suppress cue response until urgency spikes.",
+    asd: "Interoceptive uncertainty and routine disruption reduce early detection and response reliability.",
+    combined: "Basic regulation needs are deferred until urgent, which worsens cognition, mood stability, pain, and sensory tolerance downstream.",
+    neuro: {
+      regions: "Insular Cortex (Insula), Hypothalamus, Prefrontal Cortex (PFC)",
+      normal: "Body-state cues are integrated early and acted on before destabilization.",
+      adhd: "Cue salience drops against current-task priority until late-stage urgency.",
+      asd: "Interoceptive decoding variability delays accurate body-state interpretation."
+    },
+    connects: ["interoception", "sleep-wake-conflict", "shutdown-latency", "burnout", "chronic-pain-amplification", "conditioning-deconditioning-swing", "decision-paralysis"]
+  },
+  {
+    id: "chronic-pain-amplification",
+    title: "Chronic Pain Amplification",
+    source: "both",
+    brief: "Persistent pain sensitivity can increase through cumulative load, poor recovery, and compensatory movement patterns.",
+    adhd: "Boom-bust pacing and inconsistent self-care increase flare risk and recovery debt.",
+    asd: "Sensory and interoceptive differences can magnify pain salience and reduce tolerance under stress.",
+    combined: "Pain becomes both input and amplifier, reducing function and increasing vulnerability to future overload loops.",
+    neuro: {
+      regions: "Insular Cortex (Insula), Anterior Cingulate Cortex (ACC), Somatosensory Cortex, Amygdala",
+      normal: "Pain signals are modulated by context and recovery systems.",
+      adhd: "Pacing variability and delayed regulation can prolong pain cycles.",
+      asd: "Higher sensory gain can increase perceived pain intensity and persistence."
+    },
+    connects: ["musculoskeletal-strain", "burnout", "sleep-wake-conflict", "body-needs-neglect", "conditioning-deconditioning-swing", "occupational-volatility"]
+  },
+  {
+    id: "occupational-volatility",
+    title: "Occupational Volatility",
+    source: "both",
+    brief: "Output quality can be high, but timing and consistency fluctuate enough to create role instability.",
+    adhd: "Activation variability and deadline-dependence produce uneven throughput.",
+    asd: "Context shifts and social-process overhead can consume capacity that is not visible to others.",
+    combined: "Strong capability and unstable consistency can coexist, and this is often misread as attitude rather than state-dependent function.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Basal Ganglia, Default Mode Network (DMN)",
+      normal: "Output consistency tracks effort and planning with moderate variance.",
+      adhd: "Performance can swing with salience, urgency, and state activation.",
+      asd: "Hidden processing costs increase variance under social and sensory load."
+    },
+    connects: ["executive", "interruption-reentry-friction", "language-retrieval-load", "urgency-dependence", "burnout", "relationship-trust-erosion", "admin-avoidance-accumulation"]
+  },
+  {
+    id: "relationship-trust-erosion",
+    title: "Relationship Trust Erosion",
+    source: "both",
+    brief: "Repeated delays, misses, and misunderstood intent can slowly erode trust even when care and effort are genuine.",
+    adhd: "Inconsistency in follow-through and memory gaps can look like low priority or low care.",
+    asd: "Signal-interpretation mismatches and repair delays can compound ambiguity over time.",
+    combined: "Good intent is not enough when pattern-level reliability looks unstable. Trust erodes unless mechanisms are named explicitly and repair is supported early.",
+    neuro: {
+      regions: "Default Mode Network (DMN), Amygdala, Temporoparietal Junction (TPJ)",
+      normal: "Relational trust updates gradually through consistent repair and predictability.",
+      adhd: "Behavioral variability creates noisy trust signals.",
+      asd: "Interpretation mismatch increases uncertainty about intent and reliability."
+    },
+    connects: ["social-repair-delay", "social-withdrawal-reachout-conflict", "occupational-volatility", "emotional-permanence", "continuity-of-self", "rsd", "burnout"]
+  },
+  {
+    id: "admin-avoidance-accumulation",
+    title: "Admin Avoidance Accumulation",
+    source: "both",
+    brief: "Bureaucratic tasks (forms, appointments, billing, paperwork) are deferred repeatedly until consequences stack.",
+    adhd: "Low-reward admin tasks have high initiation cost and weak retention across days.",
+    asd: "Ambiguous process steps and social uncertainty increase cognitive threat and delay starts.",
+    combined: "Avoidance can be protective short-term, but long-term accumulation creates high-stress administrative cliffs.",
+    neuro: {
+      regions: "Prefrontal Cortex (PFC), Basal Ganglia, Amygdala",
+      normal: "Low-meaning admin tasks remain manageable through routine execution.",
+      adhd: "Low salience and weak follow-through make admin tasks chronically vulnerable to delay.",
+      asd: "Unclear rules and process uncertainty increase aversive load and postponement."
+    },
+    connects: ["demand-avoidance", "executive", "time-blindness", "occupational-volatility", "burnout", "decision-paralysis", "relationship-trust-erosion"]
+  },
+  {
+    id: "conditioning-deconditioning-swing",
+    title: "Conditioning-Deconditioning Swing",
+    source: "both",
+    brief: "Physical capacity can oscillate between overexertion bursts and deconditioning troughs rather than stable progression.",
+    adhd: "All-or-nothing activation patterns encourage intensity spikes followed by drop-off.",
+    asd: "Recovery windows may be longer when sensory, pain, and routine disruptions accumulate.",
+    combined: "Inconsistent pacing creates cycles of progress and setback that increase injury risk and reduce confidence in body signals.",
+    neuro: {
+      regions: "Cerebellum, Basal Ganglia, Insular Cortex (Insula)",
+      normal: "Training load and recovery are adjusted gradually for stable adaptation.",
+      adhd: "Pacing volatility increases load oscillation and adaptation inconsistency.",
+      asd: "Higher recovery demand and sensory load can reduce tolerance for sustained progression."
+    },
+    connects: ["musculoskeletal-strain", "chronic-pain-amplification", "body-needs-neglect", "burnout", "sleep-wake-conflict", "proprioceptive-calibration"]
+  }
+];
+
+const loops = [
+  {
+    id: "rejection-withdrawal-spiral",
+    role: "Relational Safety Loop",
+    name: "The Rejection-Withdrawal Spiral",
+    steps: [
+      { label: "RSD fires", source: "both" },
+      { label: "Emotional overreaction", source: "adhd" },
+      { label: "Can't name what you feel", source: "asd" },
+      { label: "Withdraw to protect", source: "asd" },
+      { label: "Emotional permanence fades", source: "adhd" },
+      { label: "Reconnection feels impossible", source: "both" },
+      { label: "Isolation increases sensitivity", source: "both" },
+    ],
+    desc: "Perceived rejection triggers high arousal before emotional labeling catches up, so withdrawal feels protective. Reduced social-thread continuity raises reconnection cost, which increases isolation and sensitivity to the next rejection cue.",
+    impacts: ["rsd", "alexithymia", "masking", "emotional-permanence", "continuity-of-self", "social-tug-of-war", "social-inference", "inhibitory-control", "emotional-signal-decoding-latency"]
+  },
+  {
+    id: "capacity-collapse",
+    role: "Energy Depletion Loop",
+    name: "The Capacity Collapse",
+    steps: [
+      { label: "Masking all day", source: "asd" },
+      { label: "Sensory overload", source: "both" },
+      { label: "Executive function degrades", source: "adhd" },
+      { label: "Can't initiate recovery", source: "adhd" },
+      { label: "Demand avoidance triggers", source: "both" },
+      { label: "Shame and self-judgement", source: "both" },
+      { label: "Burnout deepens", source: "asd" },
+    ],
+    desc: "Masking and sensory load drain regulatory bandwidth faster than recovery actions can start. As initiation fails, shame and demand pressure rise, which deepens burnout and lowers next-day capacity.",
+    impacts: ["masking", "sensory", "executive", "demand-avoidance", "burnout", "sleep-wake-conflict", "transition-shock", "urgency-dependence", "sensory-prediction-load", "reward-volatility", "proprioceptive-calibration", "morning-startup-lag", "musculoskeletal-strain"]
+  },
+  {
+    id: "executive-paralysis-chain",
+    role: "Initiation Failure Loop",
+    name: "The Executive Paralysis Chain",
+    steps: [
+      { label: "Task perceived as demand", source: "asd" },
+      { label: "Dopamine signal fails", source: "adhd" },
+      { label: "Executive freeze", source: "both" },
+      { label: "Time blindness masks delay", source: "adhd" },
+      { label: "Sudden panic at deadline", source: "adhd" },
+      { label: "RSD from perceived failure", source: "both" },
+    ],
+    desc: "Demand threat and low activation combine into a startup freeze while time tracking slips. Deadline panic then forces a high-cost push, reinforcing RSD and future avoidance.",
+    impacts: ["demand-avoidance", "executive", "time-blindness", "rsd", "decision-paralysis", "urgency-dependence", "inhibitory-control", "reward-volatility", "morning-startup-lag"]
+  },
+  {
+    id: "sensory-social-exhaustion-arc",
+    role: "Social Load Loop",
+    name: "The Sensory-Social Exhaustion Arc",
+    steps: [
+      { label: "Social environment noise", source: "both" },
+      { label: "Filtering fails", source: "adhd" },
+      { label: "Conscious script running", source: "asd" },
+      { label: "Interoception goes dark", source: "both" },
+      { label: "Sudden irritability", source: "both" },
+      { label: "Masking collapse", source: "asd" },
+    ],
+    desc: "Unfiltered sensory input plus manual social scripting consume processing reserves and mute body warning signals. Delayed overload detection then presents as abrupt irritability or mask collapse, increasing future social load.",
+    impacts: ["sensory", "masking", "interoception", "alexithymia", "burnout", "social-tug-of-war", "stimming-conflict", "social-inference", "transition-shock", "sensory-prediction-load", "proprioceptive-calibration", "musculoskeletal-strain", "emotional-signal-decoding-latency"]
+  },
+  {
+    id: "engine-conflict-loop",
+    role: "Stability-Stimulation Loop",
+    name: "The Engine Conflict Loop",
+    steps: [
+      { label: "Build rigid routine", source: "asd" },
+      { label: "Routine becomes deadening", source: "adhd" },
+      { label: "Novelty chase breaks structure", source: "adhd" },
+      { label: "Predictability collapses", source: "asd" },
+      { label: "Anxiety and avoidance spike", source: "both" },
+      { label: "Emergency routine rebuild", source: "both" },
+    ],
+    desc: "Stability routines reduce threat but eventually lose reward value and feel deadening. Novelty seeking breaks structure, which spikes anxiety and forces stricter routine rebuilding.",
+    impacts: ["routine-novelty", "executive", "demand-avoidance", "burnout", "sleep-wake-conflict", "transition-shock", "urgency-dependence", "reward-volatility"]
+  },
+  {
+    id: "leaky-flow-loop",
+    role: "Focus Fragmentation Loop",
+    name: "The Leaky Flow Loop",
+    steps: [
+      { label: "Enter deep tunnel", source: "asd" },
+      { label: "Distractor pops attention", source: "adhd" },
+      { label: "Task fragments", source: "both" },
+      { label: "Half-finished interest pile", source: "both" },
+      { label: "Shame blocks re-entry", source: "both" },
+      { label: "Crave perfect flow return", source: "asd" },
+    ],
+    desc: "Deep tunnel focus forms, but salience intrusions repeatedly break task-state continuity. Fragmentation and shame increase re-entry cost, making unfinished work more likely in the next cycle.",
+    impacts: ["monotropism", "interest-cycle", "executive", "time-blindness", "decision-paralysis", "burnout", "transition-shock", "reward-volatility"]
+  },
+  {
+    id: "night-recovery-debt-loop",
+    role: "Circadian Recovery Loop",
+    name: "The Night Recovery Debt Loop",
+    steps: [
+      { label: "Night finally feels quiet", source: "asd" },
+      { label: "Dopamine-seeking keeps you up", source: "adhd" },
+      { label: "Sleep window slides later", source: "adhd" },
+      { label: "Morning executive crash", source: "both" },
+      { label: "Sensory tolerance drops", source: "asd" },
+      { label: "Need night refuge even more", source: "both" },
+    ],
+    desc: "Night offers the first low-noise window, so stimulation and catch-up activity delay sleep onset. Sleep debt then lowers daytime regulation, which makes night refuge feel even more necessary.",
+    impacts: ["sleep-wake-conflict", "time-blindness", "executive", "sensory", "burnout", "continuity-of-self", "urgency-dependence", "reward-volatility", "sensory-prediction-load", "proprioceptive-calibration", "morning-startup-lag", "musculoskeletal-strain"]
+  },
+  {
+    id: "startup-ramp-loop",
+    role: "State Activation Loop",
+    name: "The Morning Boot Ramp",
+    steps: [
+      { label: "Wake but not operational", source: "adhd" },
+      { label: "Forced transition pressure", source: "both" },
+      { label: "Motor and executive misfires", source: "both" },
+      { label: "Compensatory tension rises", source: "both" },
+      { label: "Day compresses into urgency", source: "adhd" },
+      { label: "Late-night catch-up extends", source: "adhd" },
+      { label: "Next startup lag worsens", source: "both" },
+    ],
+    desc: "Wakefulness arrives before functional activation, so external demands hit during incomplete startup. Urgency compensation shifts work later, reinforcing the next morning's activation lag.",
+    impacts: ["morning-startup-lag", "sleep-wake-conflict", "executive", "time-blindness", "urgency-dependence", "transition-shock", "musculoskeletal-strain", "burnout"]
+  },
+  {
+    id: "reentry-debt-loop",
+    role: "Reentry Debt Loop",
+    name: "The Reentry Debt Loop",
+    steps: [
+      { label: "Interrupted task-state", source: "both" },
+      { label: "Context thread drops", source: "adhd" },
+      { label: "Re-entry feels costly", source: "asd" },
+      { label: "Delay and avoidance", source: "both" },
+      { label: "Backlog pressure grows", source: "both" },
+      { label: "Restart barrier increases", source: "both" },
+    ],
+    desc: "Interruptions drop active context and raise the energy needed to re-enter the original task. Each delayed restart adds backlog pressure, which further increases restart friction.",
+    impacts: ["interruption-reentry-friction", "working-memory-reliability", "initiation-friction", "executive", "demand-avoidance", "burnout", "occupational-volatility"]
+  },
+  {
+    id: "calibration-debt-loop",
+    role: "Body Calibration Loop",
+    name: "The Calibration Debt Loop",
+    steps: [
+      { label: "Body cues detected late", source: "both" },
+      { label: "Compensatory movement rises", source: "both" },
+      { label: "Pain and fatigue spike", source: "both" },
+      { label: "Movement variety drops", source: "both" },
+      { label: "Conditioning regresses", source: "both" },
+      { label: "Baseline calibration worsens", source: "both" },
+    ],
+    desc: "Late body-cue detection drives compensatory movement and uneven load distribution. Pain and deconditioning then reduce calibration accuracy, increasing future compensation.",
+    impacts: ["body-needs-neglect", "interoception", "proprioceptive-calibration", "musculoskeletal-strain", "chronic-pain-amplification", "conditioning-deconditioning-swing", "burnout"]
+  },
+  {
+    id: "social-repair-loop",
+    role: "Relational Repair Loop",
+    name: "The Social Repair Loop",
+    steps: [
+      { label: "Social miss or rupture", source: "both" },
+      { label: "RSD and threat spike", source: "both" },
+      { label: "Repair initiation stalls", source: "both" },
+      { label: "Withdrawal despite longing", source: "both" },
+      { label: "Ambiguity compounds", source: "both" },
+      { label: "Trust weakens over time", source: "both" },
+    ],
+    desc: "Rupture cues trigger threat and RSD before repair initiation can mobilize. Delay and withdrawal increase ambiguity, which accelerates relational drift and future threat sensitivity.",
+    impacts: ["social-repair-delay", "social-withdrawal-reachout-conflict", "rsd", "social-inference", "masking", "relationship-trust-erosion", "emotional-permanence", "continuity-of-self"]
+  },
+  {
+    id: "planning-churn-loop",
+    role: "Planning Churn Loop",
+    name: "The Planning Churn Loop",
+    steps: [
+      { label: "Too many active variables", source: "both" },
+      { label: "Priorities re-rank repeatedly", source: "both" },
+      { label: "Start action is delayed", source: "adhd" },
+      { label: "Urgency compresses choices", source: "adhd" },
+      { label: "Output quality swings", source: "both" },
+      { label: "Replanning replaces execution", source: "both" },
+    ],
+    desc: "High variable load keeps priorities reordering faster than action can start. Urgency then compresses choices, reinforcing replanning over execution.",
+    impacts: ["sequencing-prioritization", "decision-paralysis", "initiation-friction", "urgency-dependence", "executive", "occupational-volatility", "admin-avoidance-accumulation"]
+  },
+  {
+    id: "hyperfocus-debt-loop",
+    role: "Hyperfocus Debt Loop",
+    name: "The Hyperfocus Debt Loop",
+    steps: [
+      { label: "Deep tunnel engagement", source: "both" },
+      { label: "Body cues are postponed", source: "both" },
+      { label: "Recovery debt accumulates", source: "both" },
+      { label: "Next-day capacity drops", source: "both" },
+      { label: "Pain and fatigue increase", source: "both" },
+      { label: "Future tunnel control worsens", source: "both" },
+    ],
+    desc: "Sustained tunnel engagement postpones body maintenance and recovery behaviors. The resulting recovery debt lowers next-day control and increases pain/fatigue, making future tunnels less stable.",
+    impacts: ["monotropism", "interruption-reentry-friction", "body-needs-neglect", "sleep-wake-conflict", "burnout", "chronic-pain-amplification", "interest-cycle"]
+  }
+];
+
+const brainAtlas = [
+  {
+    id: "pfc",
+    name: "Prefrontal Cortex (PFC)",
+    role: "The Executive / CEO",
+    desc: "Responsible for 'top-down' control. It manages focus, planning, impulse control, and emotional regulation. It is the part of the brain that says 'wait' or 'do this next'.",
+    impacts: ["rsd", "emotional-permanence", "continuity-of-self", "masking", "executive", "burnout", "time-blindness", "routine-novelty", "monotropism", "decision-paralysis", "social-tug-of-war", "interest-cycle", "sleep-wake-conflict", "social-inference", "emotional-signal-decoding-latency", "inhibitory-control", "urgency-dependence", "transition-shock", "reward-volatility", "sensory-prediction-load", "proprioceptive-calibration", "morning-startup-lag", "musculoskeletal-strain", "working-memory-reliability", "future-self-lag", "initiation-friction", "sequencing-prioritization", "attentional-gating", "interruption-reentry-friction", "shutdown-latency", "social-repair-delay", "social-withdrawal-reachout-conflict", "language-retrieval-load", "body-needs-neglect", "chronic-pain-amplification", "occupational-volatility", "relationship-trust-erosion", "admin-avoidance-accumulation", "conditioning-deconditioning-swing"]
+  },
+  {
+    id: "amygdala",
+    name: "Amygdala",
+    role: "The Threat Detector",
+    desc: "The brain's emotional smoke alarm. It processes fear, threat, and intense emotional signals. It triggers the fight-flight-freeze response before the conscious brain even knows why.",
+    impacts: ["rsd", "alexithymia", "burnout", "demand-avoidance", "routine-novelty", "social-tug-of-war", "social-inference", "emotional-signal-decoding-latency", "transition-shock", "sensory-prediction-load", "shutdown-latency", "social-repair-delay", "social-withdrawal-reachout-conflict", "relationship-trust-erosion", "admin-avoidance-accumulation"]
+  },
+  {
+    id: "acc",
+    name: "Anterior Cingulate Cortex (ACC)",
+    role: "The Error Monitor",
+    desc: "Acts as a bridge between emotion and reason. It detects when things aren't going as expected (errors) and helps switch between different tasks or mental states.",
+    impacts: ["rsd", "interoception", "alexithymia", "decision-paralysis", "social-tug-of-war", "monotropism", "social-inference", "emotional-signal-decoding-latency", "inhibitory-control", "transition-shock", "sensory-prediction-load", "sequencing-prioritization", "working-memory-reliability", "attentional-gating", "interruption-reentry-friction", "shutdown-latency", "social-repair-delay", "language-retrieval-load", "chronic-pain-amplification"]
+  },
+  {
+    id: "insula",
+    name: "Insular Cortex (Insula)",
+    role: "The Internal Map",
+    desc: "The center of interoception. It translates physical body signals (heart rate, hunger, pain) into feelings and emotions that the rest of the brain can understand.",
+    impacts: ["interoception", "alexithymia", "burnout", "sensory", "stimming-conflict", "sleep-wake-conflict", "sensory-prediction-load", "proprioceptive-calibration", "morning-startup-lag", "musculoskeletal-strain", "emotional-signal-decoding-latency", "shutdown-latency", "body-needs-neglect", "chronic-pain-amplification", "conditioning-deconditioning-swing"]
+  },
+  {
+    id: "basal-ganglia",
+    name: "Basal Ganglia & Striatum",
+    role: "The Motivation Engine",
+    desc: "Processes dopamine and rewards. It decides what is 'worth doing' and helps initiate physical movement and mental tasks based on expected pleasure or urgency.",
+    impacts: ["executive", "demand-avoidance", "time-blindness", "routine-novelty", "stimming-conflict", "interest-cycle", "inhibitory-control", "urgency-dependence", "transition-shock", "reward-volatility", "proprioceptive-calibration", "morning-startup-lag", "musculoskeletal-strain", "initiation-friction", "sequencing-prioritization", "interruption-reentry-friction", "occupational-volatility", "admin-avoidance-accumulation", "conditioning-deconditioning-swing"]
+  },
+  {
+    id: "thalamus",
+    name: "Thalamus",
+    role: "The Gatekeeper",
+    desc: "Every piece of sensory data (except smell) passes through here. It filters out the background noise so the conscious brain isn't overwhelmed by every single stimulus.",
+    impacts: ["sensory", "burnout", "decision-paralysis", "stimming-conflict", "sleep-wake-conflict", "transition-shock", "sensory-prediction-load", "proprioceptive-calibration", "musculoskeletal-strain", "attentional-gating", "language-retrieval-load", "chronic-pain-amplification"]
+  },
+  {
+    id: "dmn",
+    name: "Default Mode Network (DMN)",
+    role: "The Internal Narrative",
+    desc: "Active when you aren't focused on the outside world. It handles daydreaming, thinking about the past/future, and your sense of self and social identity.",
+    impacts: ["emotional-permanence", "continuity-of-self", "rsd", "masking", "monotropism", "interest-cycle", "social-inference", "future-self-lag", "working-memory-reliability", "social-withdrawal-reachout-conflict", "relationship-trust-erosion", "occupational-volatility"]
+  },
+  {
+    id: "nac",
+    name: "Nucleus Accumbens (NAc)",
+    role: "The Reward Valuator",
+    desc: "Part of the ventral striatum that tags actions as worth pursuing. It links motivation, pleasure prediction, and persistence, especially around novelty and reinforcement.",
+    impacts: ["routine-novelty", "interest-cycle", "demand-avoidance", "sleep-wake-conflict", "urgency-dependence", "reward-volatility", "occupational-volatility"]
+  },
+  {
+    id: "cerebellum",
+    name: "Cerebellum",
+    role: "The Timing Calibrator",
+    desc: "Coordinates timing, rhythm, and sensorimotor prediction. It helps smooth transitions in movement, attention, and temporal estimation.",
+    impacts: ["time-blindness", "stimming-conflict", "monotropism", "sleep-wake-conflict", "transition-shock", "sensory-prediction-load", "proprioceptive-calibration", "morning-startup-lag", "musculoskeletal-strain", "initiation-friction", "interruption-reentry-friction", "conditioning-deconditioning-swing"]
+  },
+  {
+    id: "scn",
+    name: "Suprachiasmatic Nucleus (SCN)",
+    role: "The Circadian Clock",
+    desc: "The brain's master light-sensitive clock in the hypothalamus. It synchronizes sleep-wake timing, hormone release, and daily alertness rhythms.",
+    impacts: ["sleep-wake-conflict", "time-blindness", "burnout", "morning-startup-lag", "future-self-lag", "body-needs-neglect", "shutdown-latency"]
+  }
+];
+
+const nodeById = new Map(nodes.map((node) => [node.id, node]));
+const directConnectionMap = new Map(nodes.map((node) => [node.id, new Set(node.connects)]));
+const layerDefinitions = [
+  {
+    id: 'layer-0',
+    level: 'Layer 0',
+    title: 'Core Functional Primitives',
+    subtitle: 'Direct functional impairments, delays, and atypical processing mechanisms upstream of lived patterns.',
+    nodeIds: ['time-blindness', 'future-self-lag', 'initiation-friction', 'sequencing-prioritization', 'working-memory-reliability', 'inhibitory-control', 'attentional-gating', 'reward-volatility', 'sensory', 'sensory-prediction-load', 'interoception', 'proprioceptive-calibration', 'social-inference', 'emotional-signal-decoding-latency', 'transition-shock']
+  },
+  {
+    id: 'layer-1',
+    level: 'Layer 1',
+    title: 'Primary Lived Patterns',
+    subtitle: 'First-order day-to-day patterns directly expressed from Layer 0 primitives.',
+    nodeIds: ['executive', 'alexithymia', 'masking', 'emotional-permanence', 'continuity-of-self', 'rsd', 'social-tug-of-war', 'stimming-conflict', 'monotropism', 'interruption-reentry-friction', 'shutdown-latency', 'social-repair-delay', 'social-withdrawal-reachout-conflict', 'language-retrieval-load', 'body-needs-neglect']
+  },
+  {
+    id: 'layer-2',
+    level: 'Layer 2',
+    title: 'Compounding Loop States',
+    subtitle: 'Patterns that stabilize into repeated cycles over days and weeks.',
+    nodeIds: ['demand-avoidance', 'urgency-dependence', 'routine-novelty', 'decision-paralysis', 'interest-cycle', 'sleep-wake-conflict', 'morning-startup-lag']
+  },
+  {
+    id: 'layer-3',
+    level: 'Layer 3',
+    title: 'Downstream Consequences',
+    subtitle: 'Cumulative long-horizon functional, physical, and relational outcomes.',
+    nodeIds: ['burnout', 'musculoskeletal-strain', 'chronic-pain-amplification', 'occupational-volatility', 'relationship-trust-erosion', 'admin-avoidance-accumulation', 'conditioning-deconditioning-swing']
+  }
+];
+
+const nodeLayerById = {};
+layerDefinitions.forEach((layer) => {
+  layer.nodeIds.forEach((id) => {
+    nodeLayerById[id] = layer.level;
+  });
+});
+
+const nodeTagsById = {
+  'rsd': ['Emotional', 'Rapid Overload', 'Nervous System'],
+  'emotional-permanence': ['Working Memory', 'Emotional', 'Cognitive', 'Latency'],
+  'continuity-of-self': ['Working Memory', 'Cognitive', 'Emotional', 'Temporal', 'Latency'],
+  'masking': ['Cognitive', 'Social', 'Progressive Overload', 'Compensation'],
+  'social-inference': ['Social', 'Cognitive', 'Latency'],
+  'emotional-signal-decoding-latency': ['Emotional', 'Cognitive', 'Latency', 'Attunement', 'Nervous System'],
+  'interoception': ['Body', 'Sensory', 'Nervous System', 'Latency'],
+  'alexithymia': ['Emotional', 'Cognitive', 'Latency', 'Attunement'],
+  'executive': ['Cognitive', 'Working Memory', 'Nervous System'],
+  'working-memory-reliability': ['Working Memory', 'Cognitive', 'Latency', 'Emotional'],
+  'future-self-lag': ['Temporal', 'Working Memory', 'Cognitive', 'Latency'],
+  'initiation-friction': ['Cognitive', 'Nervous System', 'Latency', 'Temporal'],
+  'sequencing-prioritization': ['Cognitive', 'Working Memory', 'Temporal'],
+  'attentional-gating': ['Cognitive', 'Sensory', 'Nervous System', 'Volatility'],
+  'inhibitory-control': ['Cognitive', 'Nervous System', 'Latency'],
+  'burnout': ['Progressive Overload', 'Nervous System', 'Emotional', 'Body'],
+  'demand-avoidance': ['Emotional', 'Nervous System', 'Cognitive'],
+  'sensory': ['Sensory', 'Nervous System', 'Rapid Overload'],
+  'sensory-prediction-load': ['Sensory', 'Nervous System', 'Latency', 'Rapid Overload'],
+  'proprioceptive-calibration': ['Body', 'Sensory', 'Motor', 'Nervous System', 'Latency'],
+  'musculoskeletal-strain': ['Body', 'Motor', 'Progressive Overload', 'Compensation'],
+  'morning-startup-lag': ['Latency', 'Nervous System', 'Body', 'Circadian', 'Recovery Lag'],
+  'time-blindness': ['Temporal', 'Cognitive', 'Latency'],
+  'urgency-dependence': ['Reward', 'Temporal', 'Cognitive', 'Nervous System', 'Volatility'],
+  'reward-volatility': ['Reward', 'Volatility', 'Nervous System', 'Cognitive'],
+  'routine-novelty': ['Reward', 'Cognitive', 'Emotional', 'Volatility'],
+  'transition-shock': ['Cognitive', 'Sensory', 'Latency', 'Rapid Overload'],
+  'monotropism': ['Cognitive', 'Latency', 'Nervous System'],
+  'decision-paralysis': ['Cognitive', 'Working Memory', 'Emotional', 'Latency'],
+  'social-tug-of-war': ['Social', 'Emotional', 'Cognitive', 'Rapid Overload'],
+  'stimming-conflict': ['Body', 'Sensory', 'Motor', 'Nervous System', 'Compensation'],
+  'interest-cycle': ['Reward', 'Cognitive', 'Volatility', 'Progressive Overload'],
+  'sleep-wake-conflict': ['Circadian', 'Nervous System', 'Body', 'Temporal', 'Recovery Lag', 'Progressive Overload'],
+  'interruption-reentry-friction': ['Cognitive', 'Working Memory', 'Latency', 'Volatility'],
+  'shutdown-latency': ['Nervous System', 'Latency', 'Rapid Overload', 'Recovery Lag'],
+  'social-repair-delay': ['Social', 'Emotional', 'Latency', 'Working Memory'],
+  'social-withdrawal-reachout-conflict': ['Social', 'Emotional', 'Nervous System', 'Latency'],
+  'language-retrieval-load': ['Cognitive', 'Social', 'Latency', 'Rapid Overload'],
+  'body-needs-neglect': ['Body', 'Interoceptive', 'Progressive Overload', 'Recovery Lag'],
+  'chronic-pain-amplification': ['Body', 'Sensory', 'Nervous System', 'Progressive Overload'],
+  'occupational-volatility': ['Cognitive', 'Temporal', 'Volatility', 'Progressive Overload'],
+  'relationship-trust-erosion': ['Social', 'Emotional', 'Progressive Overload'],
+  'admin-avoidance-accumulation': ['Cognitive', 'Temporal', 'Progressive Overload', 'Compensation'],
+  'conditioning-deconditioning-swing': ['Body', 'Motor', 'Volatility', 'Progressive Overload']
+};
+
+function getNodeTagClass(tag) {
+  if (tag === 'Body') {
+    return 'body-systems';
+  }
+  if (tag.startsWith('Layer')) {
+    return 'layer-tag';
+  }
+  return '';
+}
+
+function getNodeTags(node) {
+  const layerTag = nodeLayerById[node.id] || 'Layer Unassigned';
+  const systemTags = nodeTagsById[node.id] || [];
+  return [layerTag, ...systemTags];
+}
+
+const mechanismExpressionLinks = {
+  'emotional-signal-decoding-latency': {
+    kind: 'mechanism',
+    targetId: 'alexithymia',
+    text: 'This Layer 0 mechanism commonly expresses as Layer 1 alexithymia when emotional load is high.'
+  },
+  'alexithymia': {
+    kind: 'expression',
+    targetId: 'emotional-signal-decoding-latency',
+    text: 'This Layer 1 lived pattern is often driven by Layer 0 emotional-signal decoding latency.'
+  },
+  'working-memory-reliability': {
+    kind: 'mechanism',
+    targetId: 'continuity-of-self',
+    text: 'This Layer 0 mechanism commonly expresses as Layer 1 continuity-of-self fragmentation when cross-time self and social threads drop out.'
+  },
+  'continuity-of-self': {
+    kind: 'expression',
+    targetId: 'working-memory-reliability',
+    text: 'This Layer 1 lived pattern is often amplified by Layer 0 working-memory reliability instability.'
+  },
+  'emotional-permanence': {
+    kind: 'expression',
+    targetId: 'working-memory-reliability',
+    text: 'This Layer 1 lived pattern is often shaped by Layer 0 working-memory reliability, especially in relationship carryover.'
+  },
+  'proprioceptive-calibration': {
+    kind: 'mechanism',
+    targetId: 'musculoskeletal-strain',
+    text: 'This Layer 0 mechanism can accumulate into Layer 3 musculoskeletal strain when compensation patterns become chronic.'
+  },
+  'musculoskeletal-strain': {
+    kind: 'expression',
+    targetId: 'proprioceptive-calibration',
+    text: 'This Layer 3 downstream pattern is often rooted in unresolved Layer 0 proprioceptive calibration uncertainty.'
+  }
+};
+
+const pathwayHighlights = {
+  'continuity-of-self->sleep-wake-conflict': 'Weak continuity of self can make morning startup feel like a full reboot. Night then becomes the only place continuity feels recoverable, so delaying sleep to protect that thread becomes more likely.',
+  'sleep-wake-conflict->continuity-of-self': 'Sleep debt raises morning startup friction and fragments memory carryover, which can make continuity of self feel even less stable across days.',
+  'continuity-of-self->decision-paralysis': 'When continuity of self is unstable, future-you can feel like a stranger. That weakens commitment to longer-horizon choices and increases decision stall, especially under uncertainty.',
+  'interoception->decision-paralysis': 'If body signals are muted or ambiguous, it is harder to sense what future-you will need (rest, food, pace, recovery). Choices lose emotional clarity and become cognitively over-analysed.',
+  'reward-volatility->decision-paralysis': 'When reward salience keeps shifting, long-horizon priorities lose traction. The brain keeps reopening the choice set, making commitment and sequencing much harder.',
+  'sensory-prediction-load->sleep-wake-conflict': 'High sensory uncertainty keeps threat-monitoring active into the evening. Bedtime then feels less like shutdown and more like vigilance, delaying sleep onset and reinforcing late-night wakefulness.',
+  'proprioceptive-calibration->sleep-wake-conflict': 'If body-in-space signals stay noisy, the nervous system keeps seeking movement, pressure, or repositioning to feel settled. That calibration search can delay sleep onset and fragment shutdown.',
+  'proprioceptive-calibration->decision-paralysis': 'When posture, tension, and movement cues are hard to read, future-body needs are harder to forecast. Decisions about timing, pacing, and effort stay uncertain and easier to postpone.',
+  'proprioceptive-calibration->musculoskeletal-strain': 'When body-map signals are inconsistent, compensation patterns become the default. Over time, repeated compensation can shift load into vulnerable joints and tissues.',
+  'morning-startup-lag->sleep-wake-conflict': 'When mornings require a long activation ramp, nights feel like the only period of fully coherent function. That perceived payoff can reinforce delayed sleep timing.',
+  'sleep-wake-conflict->morning-startup-lag': 'Short or delayed sleep increases sleep inertia and lowers early executive access, stretching the next morning\'s startup ramp.',
+  'morning-startup-lag->decision-paralysis': 'If early-state calibration is incomplete, priorities are harder to sequence and commit to. Small decisions stall until activation catches up.',
+  'emotional-signal-decoding-latency->alexithymia': 'Delayed emotional decoding is an upstream mechanism that commonly presents as alexithymia in lived experience: feelings are present, but labeling lags behind sensation.',
+  'alexithymia->emotional-signal-decoding-latency': 'Alexithymia can be read as the lived expression of slower emotional-signal decoding, especially under overload or fast social demands.',
+  'working-memory-reliability->continuity-of-self': 'When active self-state context drops from working memory, continuity of self weakens and identity can feel discontinuous across time.',
+  'working-memory-reliability->emotional-permanence': 'When active relational context drops from working memory, emotional continuity weakens and people can feel less psychologically present between interactions.',
+  'emotional-permanence->working-memory-reliability': 'Instability in emotional permanence often reflects upstream working-memory reliability limits in maintaining active social and self-referential threads.',
+  'continuity-of-self->working-memory-reliability': 'Fragmented continuity of self often reflects upstream working-memory reliability limits in maintaining cross-time self-representation.',
+  'musculoskeletal-strain->proprioceptive-calibration': 'Persistent musculoskeletal strain often signals long-term compensation for unresolved proprioceptive uncertainty, especially under fatigue and repeated transitions.'
+};
+
+const pathModalBackdrop = document.getElementById('pathModalBackdrop');
+const pathModalTitle = document.getElementById('pathModalTitle');
+const pathModalSubtitle = document.getElementById('pathModalSubtitle');
+const pathModalBody = document.getElementById('pathModalBody');
+const pathModalClose = document.getElementById('pathModalClose');
+const discoveryList = document.getElementById('discoveryList');
+const discoverPathwaysBtn = document.getElementById('discoverPathwaysBtn');
+const filterCount = document.getElementById('filterCount');
+const layer0Section = document.getElementById('layer0Section');
+const layer0Nav = document.getElementById('layer0Nav');
+const layer0Content = document.getElementById('layer0Content');
+const layer1Section = document.getElementById('layer1Section');
+const layer1Nav = document.getElementById('layer1Nav');
+const layer1Content = document.getElementById('layer1Content');
+const layer2Section = document.getElementById('layer2Section');
+const layer2Nav = document.getElementById('layer2Nav');
+const layer2Content = document.getElementById('layer2Content');
+
+let lastFocusedElement = null;
+let activeNodeFilter = 'all';
+let activeLayer0NodeId = null;
+let activeLayer1NodeId = null;
+let activeLayer2NodeId = null;
+let layer2ViewMode = 'card';
+
+function getSecondDegreeViaNodes(sourceId, targetId) {
+  const direct = directConnectionMap.get(sourceId) || new Set();
+  const viaIds = [];
+
+  for (const directId of direct) {
+    const outbound = directConnectionMap.get(directId);
+    if (!outbound || !outbound.has(targetId)) {
+      continue;
+    }
+    viaIds.push(directId);
+  }
+
+  return viaIds.sort((a, b) => nodeById.get(a).title.localeCompare(nodeById.get(b).title));
+}
+
+function getSecondDegreeConnections(nodeId) {
+  const direct = directConnectionMap.get(nodeId) || new Set();
+  const secondDegree = new Map();
+
+  for (const directId of direct) {
+    const outbound = directConnectionMap.get(directId);
+    if (!outbound) {
+      continue;
+    }
+
+    for (const candidateId of outbound) {
+      if (candidateId === nodeId || direct.has(candidateId)) {
+        continue;
+      }
+      if (!nodeById.has(candidateId)) {
+        continue;
+      }
+
+      if (!secondDegree.has(candidateId)) {
+        secondDegree.set(candidateId, new Set());
+      }
+      secondDegree.get(candidateId).add(directId);
+    }
+  }
+
+  return Array.from(secondDegree.entries())
+    .map(([id, viaSet]) => ({ id, via: Array.from(viaSet) }))
+    .sort((a, b) => nodeById.get(a.id).title.localeCompare(nodeById.get(b.id).title));
+}
+
+function countSharedConnections(sourceId, targetId) {
+  const sourceSet = directConnectionMap.get(sourceId) || new Set();
+  const targetSet = directConnectionMap.get(targetId) || new Set();
+  let shared = 0;
+
+  for (const id of sourceSet) {
+    if (targetSet.has(id)) {
+      shared += 1;
+    }
+  }
+
+  return shared;
+}
+
+function buildDiscoveryCandidates(limit = 10) {
+  const candidates = [];
+
+  nodes.forEach((sourceNode) => {
+    const direct = directConnectionMap.get(sourceNode.id) || new Set();
+
+    nodes.forEach((targetNode) => {
+      if (sourceNode.id === targetNode.id || direct.has(targetNode.id)) {
+        return;
+      }
+
+      const via = getSecondDegreeViaNodes(sourceNode.id, targetNode.id);
+      if (!via.length) {
+        return;
+      }
+
+      const sharedConnections = countSharedConnections(sourceNode.id, targetNode.id);
+      const sourceTags = nodeTagsById[sourceNode.id] || [];
+      const targetTags = nodeTagsById[targetNode.id] || [];
+      const sourceLayer = nodeLayerById[sourceNode.id];
+      const targetLayer = nodeLayerById[targetNode.id];
+
+      let score = via.length * 3 + sharedConnections;
+      if (sourceTags.includes('Body') && targetTags.includes('Body')) {
+        score += 2;
+      }
+      if (sourceNode.source !== targetNode.source) {
+        score += 1;
+      }
+      if (sourceLayer && targetLayer && sourceLayer !== targetLayer) {
+        score += 1;
+      }
+
+      candidates.push({
+        sourceId: sourceNode.id,
+        targetId: targetNode.id,
+        via,
+        score,
+        sharedConnections
+      });
+    });
+  });
+
+  return candidates
+    .sort((a, b) => b.score - a.score || b.via.length - a.via.length || nodeById.get(a.sourceId).title.localeCompare(nodeById.get(b.sourceId).title))
+    .slice(0, limit);
+}
+
+function renderDiscoveredPathways() {
+  const candidates = buildDiscoveryCandidates();
+
+  if (!candidates.length) {
+    discoveryList.innerHTML = '<div class="connection-empty">No candidate pathways found yet. Add more connections to expand discovery coverage.</div>';
+    return;
+  }
+
+  discoveryList.innerHTML = candidates.map((candidate) => {
+    const source = nodeById.get(candidate.sourceId);
+    const target = nodeById.get(candidate.targetId);
+    if (!source || !target) {
+      return '';
+    }
+
+    const viaTitles = candidate.via
+      .map((id) => nodeById.get(id)?.title)
+      .filter(Boolean);
+
+    return `
+      <div class="discovery-item">
+        <div class="discovery-item-head">
+          <div class="discovery-chain"><strong>${source.title}</strong> -> <strong>${target.title}</strong></div>
+          <div class="discovery-meta">score ${candidate.score}</div>
+        </div>
+        <div class="discovery-meta">via ${viaTitles.join(', ')} | shared outbound links: ${candidate.sharedConnections}</div>
+        <div class="discovery-actions">
+          <button type="button" class="discovery-action" data-discovery-action="explain" data-source="${source.id}" data-target="${target.id}">Explain</button>
+          <button type="button" class="discovery-action" data-discovery-action="source" data-jump-node="${source.id}">Go To Source</button>
+          <button type="button" class="discovery-action" data-discovery-action="target" data-jump-node="${target.id}">Go To Target</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function matchesNodeFilter(node, filterKey = 'all') {
+  if (!node) {
+    return false;
+  }
+  if (filterKey === 'all') {
+    return true;
+  }
+  if (filterKey === 'body-systems') {
+    return getNodeTags(node).includes('Body');
+  }
+  return node.source === filterKey;
+}
+
+function getFirstLayerMatch(layerId, filterKey = 'all') {
+  const layer = layerDefinitions.find((entry) => entry.id === layerId);
+  if (!layer) {
+    return null;
+  }
+
+  return layer.nodeIds.find((id) => matchesNodeFilter(nodeById.get(id), filterKey)) || null;
+}
+
+function setNodeFilter(filterKey = 'all') {
+  activeNodeFilter = filterKey;
+
+  document.querySelectorAll('.filter-chip').forEach((button) => {
+    button.classList.toggle('active', button.dataset.filter === filterKey);
+  });
+
+  document.querySelectorAll('.node-card').forEach((card) => {
+    const node = nodeById.get(card.dataset.id);
+    const shouldShow = matchesNodeFilter(node, filterKey);
+
+    card.style.display = shouldShow ? '' : 'none';
+  });
+
+  const layer0Ids = layerDefinitions.find((layer) => layer.id === 'layer-0')?.nodeIds || [];
+  const layer1Ids = layerDefinitions.find((layer) => layer.id === 'layer-1')?.nodeIds || [];
+  const layer2Ids = layerDefinitions.find((layer) => layer.id === 'layer-2')?.nodeIds || [];
+
+  const layer0Visible = layer0Ids.filter((id) => matchesNodeFilter(nodeById.get(id), filterKey)).length;
+  const layer1Visible = layer1Ids.filter((id) => matchesNodeFilter(nodeById.get(id), filterKey)).length;
+  const layer2Visible = layer2Ids.filter((id) => matchesNodeFilter(nodeById.get(id), filterKey)).length;
+
+  if (layer0Section) layer0Section.style.display = layer0Visible ? '' : 'none';
+  if (layer1Section) layer1Section.style.display = layer1Visible ? '' : 'none';
+  if (layer2Section) layer2Section.style.display = layer2Visible ? '' : 'none';
+
+  document.querySelectorAll('.layer-section').forEach((section) => {
+    const cards = Array.from(section.querySelectorAll('.node-card'));
+    const visibleInSection = cards.filter((card) => card.style.display !== 'none').length;
+    section.style.display = visibleInSection ? '' : 'none';
+
+    const countBadge = section.querySelector('.layer-count');
+    if (countBadge) {
+      countBadge.textContent = `${visibleInSection}/${cards.length} visible`;
+    }
+  });
+
+  const totalVisibleAcrossModel = nodes.filter((node) => matchesNodeFilter(node, filterKey)).length;
+  filterCount.textContent = `${totalVisibleAcrossModel} visible`;
+
+  ['#layer0Nav', '#layer1Nav', '#layer2Nav'].forEach((selector) => {
+    document.querySelectorAll(`${selector} .loop-nav-item`).forEach((item) => {
+      const node = nodeById.get(item.dataset.nodeId);
+      const show = matchesNodeFilter(node, filterKey);
+      item.style.display = show ? '' : 'none';
+    });
+  });
+
+  const activeLayer0Node = activeLayer0NodeId ? nodeById.get(activeLayer0NodeId) : null;
+  if (!activeLayer0Node || !matchesNodeFilter(activeLayer0Node, filterKey)) {
+    const fallback = getFirstLayerMatch('layer-0', filterKey);
+    if (fallback) renderLayer0(fallback);
+  }
+
+  const activeLayer1Node = activeLayer1NodeId ? nodeById.get(activeLayer1NodeId) : null;
+  if (!activeLayer1Node || !matchesNodeFilter(activeLayer1Node, filterKey)) {
+    const fallback = getFirstLayerMatch('layer-1', filterKey);
+    if (fallback) renderLayer1(fallback);
+  }
+
+  const activeLayer2Node = activeLayer2NodeId ? nodeById.get(activeLayer2NodeId) : null;
+  if (!activeLayer2Node || !matchesNodeFilter(activeLayer2Node, filterKey)) {
+    const fallback = getFirstLayerMatch('layer-2', filterKey);
+    if (fallback) renderLayer2(fallback, layer2ViewMode);
+  }
+}
+
+function closePathModal() {
+  pathModalBackdrop.classList.remove('open');
+  pathModalBackdrop.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+
+  if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+    lastFocusedElement.focus();
+  }
+}
+
+function openPathModal(sourceId, targetId) {
+  const source = nodeById.get(sourceId);
+  const target = nodeById.get(targetId);
+  if (!source || !target) {
+    return;
+  }
+
+  const viaIds = getSecondDegreeViaNodes(sourceId, targetId);
+  const isDirect = (directConnectionMap.get(sourceId) || new Set()).has(targetId);
+  const noteKey = `${sourceId}->${targetId}`;
+  const highlightNote = pathwayHighlights[noteKey];
+
+  const directPathHtml = isDirect ? `
+    <div class="path-item">
+      <div class="path-chain">
+        <button type="button" class="path-node-chip source" data-jump-node="${source.id}">${source.title}</button>
+        <span class="path-hop">-></span>
+        <button type="button" class="path-node-chip target" data-jump-node="${target.id}">${target.title}</button>
+      </div>
+      <div class="path-item-note">Direct link: this pathway is explicitly defined in the source node connections.</div>
+    </div>
+  ` : '';
+
+  const pathItemsHtml = viaIds.length ? viaIds.map((viaId) => {
+    const via = nodeById.get(viaId);
+    if (!via) {
+      return '';
+    }
+
+    return `
+      <div class="path-item">
+        <div class="path-chain">
+          <button type="button" class="path-node-chip source" data-jump-node="${source.id}">${source.title}</button>
+          <span class="path-hop">-></span>
+          <button type="button" class="path-node-chip via" data-jump-node="${via.id}">${via.title}</button>
+          <span class="path-hop">-></span>
+          <button type="button" class="path-node-chip target" data-jump-node="${target.id}">${target.title}</button>
+        </div>
+        <div class="path-item-note">Bridge logic via <strong>${via.title}</strong>: ${via.brief}</div>
+      </div>
+    `;
+  }).join('') : '';
+
+  const contentHtml = `${directPathHtml}${pathItemsHtml}`;
+
+  pathModalTitle.textContent = `${source.title} -> ${target.title}`;
+  pathModalSubtitle.textContent = 'Pathways show how one experience can reinforce another directly or through intermediate mechanisms.';
+  pathModalBody.innerHTML = `
+    ${highlightNote ? `<div class="path-highlight-note">${highlightNote}</div>` : ''}
+    <div class="path-list">${contentHtml || '<div class="connection-empty">No direct or 2-hop routes are currently defined for this pair.</div>'}</div>
+  `;
+
+  lastFocusedElement = document.activeElement;
+  pathModalBackdrop.classList.add('open');
+  pathModalBackdrop.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  pathModalClose.focus();
+}
+
+// Render nodes in layered sections
+const layeredNodeSections = document.getElementById('layeredNodeSections');
+
+function buildNodeCard(node, options = {}) {
+  const forceExpanded = Boolean(options.forceExpanded);
+  const disableToggle = Boolean(options.disableToggle);
+  const focusMode = Boolean(options.focusMode);
+
+  const card = document.createElement('div');
+  card.className = 'node-card';
+  card.dataset.source = node.source;
+  card.dataset.id = node.id;
+  card.dataset.layer = nodeLayerById[node.id] || 'Layer Unassigned';
+  if (focusMode) {
+    card.classList.add('layer0-focus-card');
+  }
+  if (forceExpanded) {
+    card.classList.add('active');
+  }
+
+  const connectionsHtml = node.connects.map((cid) => {
+    const target = nodeById.get(cid);
+    if (!target) return '';
+    return `<span class="connection-pill" data-target="${cid}"><span class="arrow">→</span> ${target.title}<button type="button" class="path-explain-trigger" data-source="${node.id}" data-target="${cid}">Path</button></span>`;
+  }).join('');
+
+  const secondDegreeConnections = getSecondDegreeConnections(node.id);
+  const secondDegreeHtml = secondDegreeConnections.length
+    ? secondDegreeConnections.map((entry) => {
+      const target = nodeById.get(entry.id);
+      if (!target) return '';
+      const viaTitles = entry.via
+        .map((viaId) => nodeById.get(viaId)?.title)
+        .filter(Boolean);
+      const viaText = viaTitles.length > 2
+        ? `${viaTitles.slice(0, 2).join(' + ')} +${viaTitles.length - 2}`
+        : viaTitles.join(' + ');
+      return `<span class="connection-pill second-degree-pill" data-target="${entry.id}"><span class="arrow">↠</span> ${target.title}<span class="via-meta">via ${viaText}</span><button type="button" class="path-explain-trigger" data-source="${node.id}" data-target="${entry.id}">Path</button></span>`;
+    }).join('')
+    : '<span class="connection-empty">No second-degree pathways from this node yet.</span>';
+
+  let neuroRegionsHtml = node.neuro.regions;
+  brainAtlas.forEach((region) => {
+    const regex = new RegExp(`\\b${region.name}\\b|\\b${region.id.toUpperCase()}\\b`, 'gi');
+    neuroRegionsHtml = neuroRegionsHtml.replace(regex, `<span class="neuro-region-link" data-region="${region.id}">$&</span>`);
+  });
+
+  const nodeTags = getNodeTags(node);
+  card.dataset.bodySystems = nodeTags.includes('Body') ? 'true' : 'false';
+  const nodeTagsHtml = nodeTags.length
+    ? `<div class="node-tag-row">${nodeTags.map((tag) => `<span class="node-tag ${getNodeTagClass(tag)}">${tag}</span>`).join('')}</div>`
+    : '';
+
+  const mechLink = mechanismExpressionLinks[node.id];
+  const mechanismPrefix = mechLink
+    ? (mechLink.kind === 'expression' ? 'Expression -> Mechanism:' : 'Mechanism -> Expression:')
+    : '';
+  const mechanismHintHtml = mechLink
+    ? `<div class="mechanism-hint"><strong>${mechanismPrefix}</strong> ${mechLink.text}<button type="button" class="mechanism-action" data-mechanism-source="${node.id}" data-mechanism-target="${mechLink.targetId}">Explain Path</button></div>`
+    : '';
+
+  card.innerHTML = `
+    <div class="node-header">
+      <div style="display:flex;align-items:flex-start;gap:8px;flex:1;min-width:0">
+        <div class="node-title">${node.title}</div>
+        <span class="source-tag ${node.source}">${node.source === 'both' ? 'ADHD + ASD' : node.source.toUpperCase()}</span>
+      </div>
+      <div class="expand-icon">+</div>
+    </div>
+    <div class="node-brief">${node.brief}</div>
+    ${nodeTagsHtml}
+    <div class="detail-panel">
+      <div class="detail-divider"></div>
+      <div class="interaction-section">
+        <div class="interaction-label adhd-label">ADHD contribution</div>
+        <div class="interaction-text">${node.adhd}</div>
+      </div>
+      <div class="interaction-section">
+        <div class="interaction-label asd-label">ASD contribution</div>
+        <div class="interaction-text">${node.asd}</div>
+      </div>
+      <div class="interaction-section">
+        <div class="interaction-label combined-label">How they interact</div>
+        <div class="interaction-text">${node.combined}</div>
+      </div>
+      ${mechanismHintHtml}
+
+      <div class="neuro-section">
+        <div class="neuro-label">Neuroscience Perspective</div>
+        <div class="neuro-meta">
+          <div class="neuro-meta-item">
+            <span class="neuro-meta-label">Brain Regions:</span> ${neuroRegionsHtml}
+          </div>
+          <div class="neuro-meta-item">
+            <span class="neuro-meta-label">Typical Process:</span> ${node.neuro.normal}
+          </div>
+        </div>
+        <div class="neuro-impact-grid">
+          <div class="impact-box">
+            <strong class="impact-adhd">ADHD Impact</strong>
+            ${node.neuro.adhd}
+          </div>
+          <div class="impact-box">
+            <strong class="impact-asd">ASD Impact</strong>
+            ${node.neuro.asd}
+          </div>
+        </div>
+      </div>
+
+      <div class="connections">
+        <div class="connections-title">Connects to</div>
+        <div>${connectionsHtml}</div>
+      </div>
+      <div class="connections">
+        <div class="connections-title">Second-degree pathways (2 hops)</div>
+        <div>${secondDegreeHtml}</div>
+      </div>
+    </div>
+  `;
+
+  card.addEventListener('click', (e) => {
+    const mechanismAction = e.target.closest('.mechanism-action');
+    if (mechanismAction && card.contains(mechanismAction)) {
+      openPathModal(mechanismAction.dataset.mechanismSource, mechanismAction.dataset.mechanismTarget);
+      e.stopPropagation();
+      return;
+    }
+
+    const pathExplainTrigger = e.target.closest('.path-explain-trigger');
+    if (pathExplainTrigger && card.contains(pathExplainTrigger)) {
+      openPathModal(pathExplainTrigger.dataset.source, pathExplainTrigger.dataset.target);
+      e.stopPropagation();
+      return;
+    }
+
+    const connectionPill = e.target.closest('.connection-pill');
+    if (connectionPill && card.contains(connectionPill)) {
+      const targetId = connectionPill.dataset.target;
+      navigateToCard(targetId);
+      e.stopPropagation();
+      return;
+    }
+    const neuroRegionLink = e.target.closest('.neuro-region-link');
+    if (neuroRegionLink && card.contains(neuroRegionLink)) {
+      const regionId = neuroRegionLink.dataset.region;
+      navigateToAtlas(regionId);
+      e.stopPropagation();
+      return;
+    }
+    if (!disableToggle) {
+      card.classList.toggle('active');
+    }
+  });
+
+  return card;
+}
+
+function renderLayer0(activeId) {
+  const layer0 = layerDefinitions.find((layer) => layer.id === 'layer-0');
+  if (!layer0 || !layer0Nav || !layer0Content) {
+    return;
+  }
+
+  const fallbackId = getFirstLayerMatch('layer-0', activeNodeFilter) || layer0.nodeIds[0];
+  const resolvedActiveId = activeId && layer0.nodeIds.includes(activeId) ? activeId : fallbackId;
+  activeLayer0NodeId = resolvedActiveId;
+
+  layer0Nav.innerHTML = '';
+  layer0.nodeIds.forEach((id) => {
+    const node = nodeById.get(id);
+    if (!node) {
+      return;
+    }
+
+    const item = document.createElement('div');
+    item.className = `loop-nav-item ${id === resolvedActiveId ? 'active' : ''}`;
+    item.dataset.nodeId = id;
+    item.innerHTML = `
+      <div class="loop-nav-kicker">${node.source === 'both' ? 'ADHD + ASD' : node.source.toUpperCase()}</div>
+      <div class="loop-nav-name">${node.title}</div>
+    `;
+    item.addEventListener('click', () => {
+      renderLayer0(id);
+      setNodeFilter(activeNodeFilter);
+    });
+    layer0Nav.appendChild(item);
+  });
+
+  layer0Content.innerHTML = '';
+  const activeNode = nodeById.get(resolvedActiveId);
+  if (activeNode) {
+    const mappedRegions = brainAtlas.filter((region) => region.impacts.includes(activeNode.id));
+    const mappedRegionCount = mappedRegions.length;
+    const mappedRegionsHtml = mappedRegions.length
+      ? mappedRegions.map((region) => `<span class="loop-link-tag" onclick="navigateToAtlas('${region.id}')">${region.name}</span>`).join('')
+      : '<span class="connection-empty">No explicit atlas regions mapped for this primitive yet.</span>';
+
+    const regionBlock = document.createElement('div');
+    regionBlock.className = 'crossmap-block';
+    regionBlock.innerHTML = `
+      <div class="crossmap-head">
+        <div class="loop-links-title">Mapped Brain Atlas Regions</div>
+        <span class="mapping-density-badge">${mappedRegionCount} mapped</span>
+      </div>
+      <div class="atlas-links-subtitle">Regions currently linked to this Layer 0 primitive through atlas impact mappings.</div>
+      <div>${mappedRegionsHtml}</div>
+    `;
+
+    layer0Content.appendChild(regionBlock);
+
+    const focusCard = buildNodeCard(activeNode, { forceExpanded: true, disableToggle: true, focusMode: true });
+    layer0Content.appendChild(focusCard);
+  }
+}
+
+function renderLayer1(activeId) {
+  const layer1 = layerDefinitions.find((layer) => layer.id === 'layer-1');
+  if (!layer1 || !layer1Nav || !layer1Content) {
+    return;
+  }
+
+  const fallbackId = getFirstLayerMatch('layer-1', activeNodeFilter) || layer1.nodeIds[0];
+  const resolvedActiveId = activeId && layer1.nodeIds.includes(activeId) ? activeId : fallbackId;
+  activeLayer1NodeId = resolvedActiveId;
+
+  layer1Nav.innerHTML = '';
+  layer1.nodeIds.forEach((id) => {
+    const node = nodeById.get(id);
+    if (!node) {
+      return;
+    }
+
+    const item = document.createElement('div');
+    item.className = `loop-nav-item ${id === resolvedActiveId ? 'active' : ''}`;
+    item.dataset.nodeId = id;
+    item.innerHTML = `
+      <div class="loop-nav-kicker">${node.source === 'both' ? 'ADHD + ASD' : node.source.toUpperCase()}</div>
+      <div class="loop-nav-name">${node.title}</div>
+    `;
+    item.addEventListener('click', () => {
+      renderLayer1(id);
+      setNodeFilter(activeNodeFilter);
+    });
+    layer1Nav.appendChild(item);
+  });
+
+  layer1Content.innerHTML = '';
+  const activeNode = nodeById.get(resolvedActiveId);
+  if (!activeNode) {
+    return;
+  }
+
+  const focusCard = buildNodeCard(activeNode, { forceExpanded: true, disableToggle: true, focusMode: true });
+  layer1Content.appendChild(focusCard);
+}
+
+function getLayerNodeIdSet(layerId) {
+  return new Set(layerDefinitions.find((layer) => layer.id === layerId)?.nodeIds || []);
+}
+
+function getLoopRelevanceMetrics(activeNode, loop) {
+  const loopImpactSet = new Set(loop.impacts);
+  const downstreamSet = getLayerNodeIdSet('layer-3');
+
+  const directLinkHits = activeNode.connects.filter((id) => loopImpactSet.has(id)).length;
+  const inboundLoopHits = nodes.filter((node) => {
+    if (node.id === activeNode.id) {
+      return false;
+    }
+    return loopImpactSet.has(node.id) && node.connects.includes(activeNode.id);
+  }).length;
+  const downstreamHits = loop.impacts.filter((id) => downstreamSet.has(id)).length;
+
+  const score = (directLinkHits * 3) + (inboundLoopHits * 2) + downstreamHits;
+
+  return {
+    score,
+    directLinkHits,
+    inboundLoopHits,
+    downstreamHits
+  };
+}
+
+function renderLayer2(activeId, viewMode = layer2ViewMode) {
+  const layer2 = layerDefinitions.find((layer) => layer.id === 'layer-2');
+  if (!layer2 || !layer2Nav || !layer2Content) {
+    return;
+  }
+
+  layer2ViewMode = viewMode;
+  const fallbackId = getFirstLayerMatch('layer-2', activeNodeFilter) || layer2.nodeIds[0];
+  const resolvedActiveId = activeId && layer2.nodeIds.includes(activeId) ? activeId : fallbackId;
+  activeLayer2NodeId = resolvedActiveId;
+
+  layer2Nav.innerHTML = '';
+  layer2.nodeIds.forEach((id) => {
+    const node = nodeById.get(id);
+    if (!node) {
+      return;
+    }
+
+    const item = document.createElement('div');
+    item.className = `loop-nav-item ${id === resolvedActiveId ? 'active' : ''}`;
+    item.dataset.nodeId = id;
+    item.innerHTML = `
+      <div class="loop-nav-kicker">${node.source === 'both' ? 'ADHD + ASD' : node.source.toUpperCase()}</div>
+      <div class="loop-nav-name">${node.title}</div>
+    `;
+    item.addEventListener('click', () => {
+      renderLayer2(id, layer2ViewMode);
+      setNodeFilter(activeNodeFilter);
+    });
+    layer2Nav.appendChild(item);
+  });
+
+  const activeNode = nodeById.get(resolvedActiveId);
+  if (!activeNode) {
+    layer2Content.innerHTML = '';
+    return;
+  }
+
+  const toggles = `
+    <div class="layer-toggle-row">
+      <button type="button" class="layer-toggle-btn ${layer2ViewMode === 'card' ? 'active' : ''}" data-layer2-view="card">Pattern Card</button>
+      <button type="button" class="layer-toggle-btn ${layer2ViewMode === 'loop' ? 'active' : ''}" data-layer2-view="loop">Loop State View</button>
+    </div>
+  `;
+
+  layer2Content.innerHTML = toggles;
+
+  if (layer2ViewMode === 'card') {
+    const focusCard = buildNodeCard(activeNode, { forceExpanded: true, disableToggle: true, focusMode: true });
+    layer2Content.appendChild(focusCard);
+  } else {
+    const relatedLoops = loops
+      .filter((loop) => loop.impacts.includes(activeNode.id))
+      .map((loop) => ({
+        loop,
+        metrics: getLoopRelevanceMetrics(activeNode, loop)
+      }))
+      .sort((a, b) => b.metrics.score - a.metrics.score || b.metrics.directLinkHits - a.metrics.directLinkHits || a.loop.name.localeCompare(b.loop.name));
+
+    const loopStateHtml = relatedLoops.length
+      ? relatedLoops.map(({ loop, metrics }) => {
+        const stepsHtml = loop.steps.map((step, i) => {
+          const arrow = i < loop.steps.length - 1 ? '<span class="loop-arrow">→</span>' : '<span class="loop-arrow">↻</span>';
+          return `<span class="loop-step ${step.source}">${step.label}</span>${arrow}`;
+        }).join('');
+
+        return `
+          <div class="loop-state-card">
+            <div class="loop-state-name">${loop.name}</div>
+            <div class="discovery-meta">Relevance ${metrics.score} • direct links ${metrics.directLinkHits} • inbound links ${metrics.inboundLoopHits} • downstream impacts ${metrics.downstreamHits}</div>
+            <div class="loop-chain">${stepsHtml}</div>
+            <div class="loop-desc">${loop.desc}</div>
+          </div>
+        `;
+      }).join('')
+      : '<span class="connection-empty">No loop-state mappings for this pattern yet.</span>';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'loop-state-list';
+    wrapper.innerHTML = loopStateHtml;
+    layer2Content.appendChild(wrapper);
+  }
+
+  layer2Content.querySelectorAll('[data-layer2-view]').forEach((button) => {
+    button.addEventListener('click', () => {
+      renderLayer2(resolvedActiveId, button.dataset.layer2View);
+      setNodeFilter(activeNodeFilter);
+    });
+  });
+}
+
+function renderLayeredNodeSections() {
+  layeredNodeSections.innerHTML = '';
+
+  layerDefinitions.forEach((layer) => {
+    if (layer.id === 'layer-0' || layer.id === 'layer-1' || layer.id === 'layer-2') {
+      return;
+    }
+
+    const section = document.createElement('section');
+    section.className = 'layer-section';
+    section.dataset.layer = layer.level;
+
+    const cardsHtml = `
+      <div class="layer-header">
+        <div>
+          <div class="layer-kicker">${layer.level}</div>
+          <div class="layer-title">${layer.title}</div>
+          <div class="layer-subtitle">${layer.subtitle}</div>
+        </div>
+        <div class="layer-count" data-layer-count="${layer.level}"></div>
+      </div>
+      <div class="node-grid"></div>
+    `;
+
+    section.innerHTML = cardsHtml;
+    const sectionGrid = section.querySelector('.node-grid');
+
+    layer.nodeIds.forEach((id) => {
+      const node = nodeById.get(id);
+      if (!node) return;
+      sectionGrid.appendChild(buildNodeCard(node));
+    });
+
+    layeredNodeSections.appendChild(section);
+  });
+}
+
+renderLayer0();
+renderLayer1();
+renderLayer2();
+renderLayeredNodeSections();
+
+document.querySelectorAll('.filter-chip').forEach((button) => {
+  button.addEventListener('click', () => {
+    setNodeFilter(button.dataset.filter || 'all');
+  });
+});
+
+discoverPathwaysBtn.addEventListener('click', renderDiscoveredPathways);
+
+discoveryList.addEventListener('click', (e) => {
+  const actionButton = e.target.closest('.discovery-action');
+  if (!actionButton) {
+    return;
+  }
+
+  const action = actionButton.dataset.discoveryAction;
+  if (action === 'explain') {
+    openPathModal(actionButton.dataset.source, actionButton.dataset.target);
+    return;
+  }
+
+  const jumpNode = actionButton.dataset.jumpNode;
+  if (jumpNode) {
+    navigateToCard(jumpNode);
+  }
+});
+
+setNodeFilter(activeNodeFilter);
+renderDiscoveredPathways();
+
+pathModalClose.addEventListener('click', closePathModal);
+
+pathModalBackdrop.addEventListener('click', (e) => {
+  if (e.target === pathModalBackdrop) {
+    closePathModal();
+  }
+});
+
+pathModalBody.addEventListener('click', (e) => {
+  const jumpNode = e.target.closest('[data-jump-node]');
+  if (!jumpNode) {
+    return;
+  }
+
+  closePathModal();
+  navigateToCard(jumpNode.dataset.jumpNode);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && pathModalBackdrop.classList.contains('open')) {
+    closePathModal();
+  }
+});
+
+function navigateToCard(id) {
+  if (nodeLayerById[id] === 'Layer 0') {
+    renderLayer0(id);
+  } else if (nodeLayerById[id] === 'Layer 1') {
+    renderLayer1(id);
+  } else if (nodeLayerById[id] === 'Layer 2') {
+    renderLayer2(id, layer2ViewMode);
+  }
+
+  let targetCard = document.querySelector(`.node-card[data-id="${id}"]`);
+  if (targetCard) {
+    if (targetCard.style.display === 'none') {
+      setNodeFilter('all');
+      if (nodeLayerById[id] === 'Layer 0') {
+        renderLayer0(id);
+      } else if (nodeLayerById[id] === 'Layer 1') {
+        renderLayer1(id);
+      } else if (nodeLayerById[id] === 'Layer 2') {
+        renderLayer2(id, layer2ViewMode);
+      }
+      targetCard = document.querySelector(`.node-card[data-id="${id}"]`);
+      if (!targetCard) {
+        return;
+      }
+    }
+
+    document.querySelectorAll('.node-card').forEach((c) => {
+      c.classList.remove('active', 'highlight-pulse');
+    });
+    targetCard.classList.add('active', 'highlight-pulse');
+    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function navigateToAtlas(id) {
+  const atlasSection = document.querySelector('.atlas-section');
+  atlasSection.scrollIntoView({ behavior: 'smooth' });
+  renderAtlas(id);
+}
+
+// Render Atlas
+function renderAtlas(activeId = brainAtlas[0].id) {
+  const nav = document.getElementById('atlasNav');
+  const content = document.getElementById('atlasContent');
+  const layer0Ids = new Set(layerDefinitions.find((layer) => layer.id === 'layer-0')?.nodeIds || []);
+  
+  nav.innerHTML = '';
+  brainAtlas.forEach(region => {
+    const item = document.createElement('div');
+    item.className = `atlas-nav-item ${region.id === activeId ? 'active' : ''}`;
+    item.innerHTML = `
+      <div class="loop-nav-kicker">${region.role}</div>
+      <div class="loop-nav-name">${region.name}</div>
+    `;
+    item.onclick = () => { renderAtlas(region.id); };
+    nav.appendChild(item);
+  });
+
+  const activeRegion = brainAtlas.find(r => r.id === activeId);
+  const linksHtml = activeRegion.impacts.map((id) => {
+    const node = nodeById.get(id);
+    if (!node) {
+      return '';
+    }
+    return `<span class="atlas-link-tag" onclick="navigateToCard('${id}')">${node.title}</span>`;
+  }).join('');
+
+  const layer0LinksHtml = activeRegion.impacts
+    .filter((id) => layer0Ids.has(id))
+    .map((id) => {
+      const node = nodeById.get(id);
+      if (!node) {
+        return '';
+      }
+      return `<span class="atlas-link-tag" onclick="navigateToCard('${id}')">${node.title}</span>`;
+    }).join('');
+
+  const layer0MappedCount = activeRegion.impacts.filter((id) => layer0Ids.has(id)).length;
+
+  content.innerHTML = `
+    <div class="atlas-region-subtitle">${activeRegion.role}</div>
+    <div class="atlas-region-title">${activeRegion.name}</div>
+    <div class="atlas-region-desc">${activeRegion.desc}</div>
+    <div class="atlas-meta-row"><span class="mapping-density-badge">${layer0MappedCount} Layer 0 primitives mapped</span></div>
+    <div class="atlas-links-title">Layer 0 Functional Primitives</div>
+    <div class="atlas-links-subtitle">Foundational processing primitives linked to this region via atlas mappings.</div>
+    <div>${layer0LinksHtml || '<span class="connection-empty">No Layer 0 primitives explicitly mapped here yet.</span>'}</div>
+    <div class="atlas-links-title">Associated Experiences (All Layers)</div>
+    <div class="atlas-links-subtitle">Cross-layer experiences currently associated with this region in the full map.</div>
+    <div>${linksHtml}</div>
+  `;
+}
+
+renderAtlas();
+
+// Render loops
+function renderLoop(activeId = loops[0].id) {
+  const nav = document.getElementById('loopsNav');
+  const content = document.getElementById('loopsContent');
+
+  nav.innerHTML = '';
+  loops.forEach((loop) => {
+    const item = document.createElement('div');
+    item.className = `loop-nav-item ${loop.id === activeId ? 'active' : ''}`;
+    item.innerHTML = `
+      <div class="loop-nav-kicker">${loop.role}</div>
+      <div class="loop-nav-name">${loop.name}</div>
+    `;
+    item.onclick = () => { renderLoop(loop.id); };
+    nav.appendChild(item);
+  });
+
+  const activeLoop = loops.find((loop) => loop.id === activeId) || loops[0];
+  const stepsHtml = activeLoop.steps.map((step, i) => {
+    const arrow = i < activeLoop.steps.length - 1 ? '<span class="loop-arrow">→</span>' : '<span class="loop-arrow">↻</span>';
+    return `<span class="loop-step ${step.source}">${step.label}</span>${arrow}`;
+  }).join('');
+
+  const linksHtml = activeLoop.impacts.map((id) => {
+    const node = nodeById.get(id);
+    if (!node) {
+      return '';
+    }
+    return `<span class="loop-link-tag" onclick="navigateToCard('${id}')">${node.title}</span>`;
+  }).join('');
+
+  content.innerHTML = `
+    <div class="loop-role">${activeLoop.role}</div>
+    <div class="loop-name">${activeLoop.name}</div>
+    <div class="loop-desc">${activeLoop.desc}</div>
+    <div class="loop-chain">${stepsHtml}</div>
+    <div class="loop-links-title">Experiences In This Loop</div>
+    <div>${linksHtml}</div>
+  `;
+}
+
+renderLoop();
+</script>
+</body>
+</html>
