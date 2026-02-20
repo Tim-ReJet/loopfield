@@ -4,72 +4,71 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A single-file interactive web application (`adhd_asd_interaction_map.html`) that maps the interaction patterns between ADHD and ASD traits. No build system, no dependencies, no package manager — just one self-contained HTML file with embedded CSS, data, and JavaScript (~3400 lines).
+Two applications sharing extracted data:
 
-## Development
+1. **Original Map** (`adhd_asd_interaction_map.html`) — Single-file interactive ADHD x ASD interaction map. ~3400 lines of self-contained HTML/CSS/JS. No build system. Open directly in browser.
 
-Open the HTML file directly in a browser. No build step, no server required.
+2. **Hypothesis Engine** (`hypothesis-engine/`) — Svelte + Vite + TypeScript app. An interactive hypothesis machine that models neurodivergent experiences across 6 conditions (ADHD, ASD, OCD, CPTSD, GAD, MDD) with a 5-level causal stack from neurochemistry to lived experience.
+
+## Commands
 
 ```bash
-open adhd_asd_interaction_map.html
+# Hypothesis Engine
+cd hypothesis-engine
+npm run dev          # Dev server with HMR (watches data/*.json)
+npm run build        # Production build
+npm test             # Run tests (Vitest)
+npx vitest run       # Run tests once
+npx vitest           # Watch mode
 ```
-
-There are no tests, linting, or CI. Validate changes by opening the file in a browser.
 
 ## Architecture
 
-The file has three sections in order:
+### Hypothesis Engine
 
-1. **CSS** (lines ~7–1287): Custom properties in `:root` define the color system (`--adhd`, `--asd`, `--both`, `--loop` and their dim/glow variants). Dark theme only. Uses DM Sans + Fraunces from Google Fonts.
+**Three-layer system:**
+- **Svelte frontend** — displays views (Find Yourself, The Unnamed, Constellations)
+- **data/ JSON files** — shared state, the bridge between Claude Code and frontend
+- **Claude Code** — intelligence layer: generates hypotheses, maps submissions, writes to data/
 
-2. **HTML** (lines ~1288–1288): Minimal structural markup — container divs, modal backdrop, filter toolbar, layer sections, brain atlas panel, feedback loops panel. Most content is rendered by JS.
+**Data files** (`hypothesis-engine/data/`):
+- `nodes.json` — 44 nodes extracted from original map (will be enriched with condition weights)
+- `loops.json` — 13 feedback loops
+- `atlas.json` — 10 brain regions
+- `layers.json` — 4 layer definitions
+- `node-tags.json`, `mechanism-expression-links.json`, `pathway-highlights.json`
+- Future: `systems.json`, `receptors.json`, `pathways.json`, `mechanisms.json`, `hypotheses.json`
 
-3. **JavaScript** (lines ~1289–3365): All logic is vanilla JS with no frameworks or libraries.
+**Core engine** (`hypothesis-engine/src/lib/`):
+- `types.ts` — Full type system: conditions, nodes, receptors, pathways, mechanisms, hypotheses, scoring
+- `data.ts` — `loadData()` loads JSON, builds indexes (nodeById, connectionMap, nodeLayerMap, nodeTagsMap). Dual-mode: fs for Vitest, fetch for browser.
+- `graph.ts` — Traversal (getDirectConnections, findAllPaths, getCommonNeighbors) + structural scoring (scoreCandidate, findTopCandidates) with 6 weighted signals + cross-system bonus
+- `causal.ts` — `traceNode()` and `traceNodePair()` trace node → regions → layer (neurochemistry depth in Phase 2)
 
-### Data Model
+**5-level causal stack:**
+```
+Level 0: Neurochemistry  (systems, receptors, pathways)
+Level 1: Brain Regions    (atlas)
+Level 2: Mechanisms       (mechanism definitions)
+Level 3: Functional Nodes (nodes — the 44 extracted patterns)
+Level 4: Unnamed/Emergent (hypotheses — generated experiences)
+```
 
-All content lives in JS constants at the top of the script:
+### Original Map
 
-- **`nodes[]`** — Each node represents an ADHD/ASD trait/experience. Fields: `id`, `title`, `source` (adhd|asd|both), `brief`, `adhd`/`asd`/`combined` descriptions, `neuro` (brain region info), `connects[]` (edge list to other node IDs).
-- **`loops[]`** — Feedback loops with `steps[]` (each has `label` + `source`) and `impacts[]` (node IDs).
-- **`brainAtlas[]`** — Brain regions with `name`, `role`, `desc`, `impacts[]` (node IDs).
-
-### Layer System
-
-Nodes are organized into 4 layers via `layerDefinitions[]`:
-- **Layer 0**: Core Functional Primitives (processing-level)
-- **Layer 1**: Primary Lived Patterns (day-to-day)
-- **Layer 2**: Compounding Loop States (recurring cycles)
-- **Layer 3**: Downstream Consequences (long-horizon outcomes)
-
-### Key Lookup Structures
-
-- `nodeById` — Map of node ID → node object
-- `directConnectionMap` — Map of node ID → Set of connected node IDs
-- `nodeLayerById` — Map of node ID → layer label
-- `nodeTagsById` — Map of node ID → tag array (Emotional, Cognitive, Social, etc.)
-- `mechanismExpressionLinks` — Maps Layer 0 primitives to their Layer 1+ expressions
-- `pathwayHighlights` — Named multi-hop pathways through the graph
-
-### Rendering
-
-All rendering is imperative DOM manipulation:
-- `renderCards()` — Main card grid with filtering by source type and tag chips
-- `renderAtlas()` — Brain region explorer panel
-- `renderLoop()` — Feedback loop visualizer
-- `showPathModal()` / `navigateToCard()` — Modal for connection pathways between nodes
-- Discovery panel shows pre-defined multi-hop pathways
-
-### Interaction Patterns
-
-- Filter chips toggle by source (ADHD/ASD/Both) and by tag
-- Clicking a card opens a detail modal with ADHD/ASD/Combined/Neuro tabs
-- Connection badges on cards link to pathway modals showing direct + second-degree connections
-- "Discover Pathways" button opens curated multi-hop pathway explorer
+Single HTML file, three sections: CSS (lines ~7–1287), HTML markup, JavaScript (lines ~1289–3365). Vanilla JS, no frameworks. Data embedded as JS constants.
 
 ## Conventions
 
-- Node IDs are kebab-case strings (e.g., `rejection-sensitive-dysphoria` → `rsd`, `sleep-wake-conflict`)
-- Connections are bidirectional in the data — if A lists B in `connects`, B should list A
-- Source values: `"adhd"`, `"asd"`, `"both"` — used for both data classification and CSS class names
-- Color coding is consistent: orange=ADHD, blue=ASD, purple=Both, red=Loops
+- Node IDs: kebab-case (`rsd`, `sleep-wake-conflict`, `time-blindness`)
+- 6 conditions: `adhd`, `asd`, `ocd`, `cptsd`, `gad`, `mdd`
+- Source values in original data: `"adhd"` | `"asd"` | `"both"`
+- Color coding: orange=ADHD, blue=ASD, purple=Both, red=Loops
+- Connections in extracted data are NOT all bidirectional — `areDirectlyConnected()` checks both directions
+- Commits: conventional format `type(scope): message`
+
+## Design Documents
+
+- `docs/plans/2026-02-20-hypothesis-engine-design.md` — Full design: vision, data model, views, inference engine
+- `docs/plans/neurochemistry-models-extended.md` — Receptor/pathway/pharmacology models for GABA/Glu, eCB, OT, HPA, opioid
+- `docs/plans/2026-02-20-phase1-implementation.md` — Phase 1 plan (completed)
