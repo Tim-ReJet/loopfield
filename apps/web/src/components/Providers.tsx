@@ -17,13 +17,15 @@ export function useConvexAvailable() {
 export function Providers({ children }: { children: ReactNode }) {
   const client = useMemo(() => {
     const url = process.env.NEXT_PUBLIC_CONVEX_URL;
-    if (!url || url.includes("127.0.0.1") || url.includes("localhost")) {
-      // Skip local-only anonymous backends on public builds unless explicitly allowed
-      if (process.env.NODE_ENV === "production" && !process.env.NEXT_PUBLIC_CONVEX_FORCE_LOCAL) {
-        return null;
-      }
-    }
     if (!url) return null;
+    // Never point production clients at anonymous local backends.
+    if (
+      process.env.NODE_ENV === "production" &&
+      (url.includes("127.0.0.1") || url.includes("localhost")) &&
+      !process.env.NEXT_PUBLIC_CONVEX_FORCE_LOCAL
+    ) {
+      return null;
+    }
     return new ConvexReactClient(url);
   }, []);
 

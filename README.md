@@ -2,7 +2,7 @@
 
 **Find the loops you already live in.**
 
-Live: [https://loopfield.vercel.app](https://loopfield.vercel.app)  
+Live: [https://loopfield.vercel.app](https://loopfield.vercel.app)
 Repo: [https://github.com/Tim-ReJet/loopfield](https://github.com/Tim-ReJet/loopfield)
 
 A high-stimulus exploratory map of AuDHD (ADHD × autism) patterns and feedback loops — scientific grounding with felt language, plus a light community path for naming the unnamed.
@@ -60,16 +60,24 @@ Set `ADMIN_SECRET` in Convex dashboard env, then open `/admin` with that secret 
 
 ### Convex cloud (production sync)
 
-Local anonymous Convex works for `npx convex dev`. For production resonance / submissions:
+Configured via Convex CLI against project `loopfield` (team `tim-a6744`).
 
 ```bash
 cd apps/web
-npx convex login
-npx convex dev   # create/link a cloud project, then
-npx convex deploy
+npx convex login          # if needed
+npx convex dev --once     # push functions to the linked deployment
+npx convex deploy         # when a prod deployment exists
+npx convex env set ADMIN_SECRET 'your-secret'
 ```
 
-Then set `NEXT_PUBLIC_CONVEX_URL` on the Vercel project to the cloud deployment URL. Without it, constellations and drafts stay local to the browser.
+**Important:** the Convex team must be within Free plan limits (or on Pro). If you see
+`You have exceeded the free plan limits`, open
+[Team usage](https://dashboard.convex.dev/t/tim-a6744/settings/usage) /
+[Billing](https://dashboard.convex.dev/t/tim-a6744/settings/billing), reduce usage or upgrade,
+then redeploy. Until then, client calls reach Convex but function execution stays disabled.
+
+Vercel already has `NEXT_PUBLIC_CONVEX_URL` for production when the deployment is re-enabled.
+
 
 ## Ethics
 
