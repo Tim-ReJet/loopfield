@@ -6,8 +6,9 @@ import { api } from "../../convex/_generated/api";
 import { getCorpus, SOURCE_COLORS } from "@/lib/corpus";
 import { getVisitorId } from "@/lib/visitor";
 import { cn } from "@/lib/cn";
+import { useConvexAvailable } from "./Providers";
 
-export function SubmissionForm() {
+function ConvexSubmissionForm() {
   const store = useMemo(() => getCorpus(), []);
   const create = useMutation(api.submissions.create);
   const [text, setText] = useState("");
@@ -24,7 +25,9 @@ export function SubmissionForm() {
 
   function toggleRelated(id: string) {
     setRelated((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id].slice(0, 12),
+      prev.includes(id)
+        ? prev.filter((x) => x !== id)
+        : [...prev, id].slice(0, 12),
     );
   }
 
@@ -119,4 +122,52 @@ export function SubmissionForm() {
       </button>
     </form>
   );
+}
+
+function LocalDraftForm() {
+  const [text, setText] = useState("");
+  const [done, setDone] = useState(false);
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    const drafts = JSON.parse(
+      localStorage.getItem("loopfield-local-drafts") ?? "[]",
+    ) as { text: string; at: number }[];
+    drafts.push({ text: text.trim(), at: Date.now() });
+    localStorage.setItem("loopfield-local-drafts", JSON.stringify(drafts));
+    setDone(true);
+    setText("");
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <p className="rounded-xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm text-amber-100/90">
+        Cloud backend not connected on this deploy yet — drafts save in this
+        browser until Convex is linked.
+      </p>
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        rows={6}
+        required
+        minLength={20}
+        placeholder="Describe the loop in your own words..."
+        className="w-full rounded-2xl border border-white/15 bg-black/40 p-4 text-white outline-none"
+      />
+      {done && (
+        <p className="text-sm text-cyan-100">Saved locally on this device.</p>
+      )}
+      <button
+        type="submit"
+        className="rounded-full bg-[#ff9b7a] px-6 py-3 text-sm font-medium text-black"
+      >
+        Save local draft
+      </button>
+    </form>
+  );
+}
+
+export function SubmissionForm() {
+  const convexOk = useConvexAvailable();
+  return convexOk ? <ConvexSubmissionForm /> : <LocalDraftForm />;
 }

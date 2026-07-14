@@ -9,6 +9,53 @@ import { useConstellation } from "@/lib/store";
 import { getVisitorId } from "@/lib/visitor";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
+import { useConvexAvailable } from "./Providers";
+
+function ResonanceActions({ nodeId }: { nodeId: string }) {
+  const [visitorId, setVisitorId] = useState("");
+  const toggle = useConstellation((s) => s.toggle);
+  const vote = useMutation(api.resonance.vote);
+  const counts = useQuery(api.resonance.countsForNode, { nodeId });
+
+  useEffect(() => {
+    setVisitorId(getVisitorId());
+  }, []);
+
+  async function handleVote(signal: "know" | "not_me" | "close") {
+    if (!visitorId) return;
+    await vote({ nodeId, signal, visitorId });
+    if (signal === "know") toggle(nodeId);
+  }
+
+  return (
+    <div className="flex gap-2">
+      <button
+        type="button"
+        onClick={() => handleVote("know")}
+        className="flex-1 rounded-full bg-cyan-300/90 px-3 py-2 text-sm font-medium text-black"
+      >
+        I know this
+        {counts ? ` · ${counts.know}` : ""}
+      </button>
+      <button
+        type="button"
+        onClick={() => handleVote("close")}
+        className="rounded-full border border-white/20 px-3 py-2 text-sm text-white/80"
+      >
+        Close
+        {counts ? ` · ${counts.close}` : ""}
+      </button>
+      <button
+        type="button"
+        onClick={() => handleVote("not_me")}
+        className="rounded-full border border-white/20 px-3 py-2 text-sm text-white/80"
+      >
+        Not me
+        {counts ? ` · ${counts.not_me}` : ""}
+      </button>
+    </div>
+  );
+}
 
 export function NodeDrawer({
   node,
@@ -18,27 +65,15 @@ export function NodeDrawer({
   onClose: () => void;
 }) {
   const [depth, setDepth] = useState<"felt" | "lenses" | "neuro">("felt");
-  const [visitorId, setVisitorId] = useState("");
   const toggle = useConstellation((s) => s.toggle);
   const inConstellation = useConstellation((s) =>
     node ? s.nodeIds.includes(node.id) : false,
   );
-  const vote = useMutation(api.resonance.vote);
-  const counts = useQuery(
-    api.resonance.countsForNode,
-    node ? { nodeId: node.id } : "skip",
-  );
+  const convexOk = useConvexAvailable();
 
   useEffect(() => {
-    setVisitorId(getVisitorId());
     setDepth("felt");
   }, [node?.id]);
-
-  async function handleVote(signal: "know" | "not_me" | "close") {
-    if (!node || !visitorId) return;
-    await vote({ nodeId: node.id, signal, visitorId });
-    if (signal === "know") toggle(node.id);
-  }
 
   return (
     <AnimatePresence>
@@ -144,39 +179,24 @@ export function NodeDrawer({
           </div>
 
           <div className="space-y-3 border-t border-white/10 p-4">
-            <div className="flex gap-2">
+            {convexOk ? (
+              <ResonanceActions nodeId={node.id} />
+            ) : (
               <button
                 type="button"
-                onClick={() => handleVote("know")}
-                className="flex-1 rounded-full bg-cyan-300/90 px-3 py-2 text-sm font-medium text-black"
+                onClick={() => toggle(node.id)}
+                className="w-full rounded-full bg-cyan-300/90 px-3 py-2 text-sm font-medium text-black"
               >
-                I know this
-                {counts ? ` · ${counts.know}` : ""}
+                I know this (local)
               </button>
-              <button
-                type="button"
-                onClick={() => handleVote("close")}
-                className="rounded-full border border-white/20 px-3 py-2 text-sm text-white/80"
-              >
-                Close
-                {counts ? ` · ${counts.close}` : ""}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleVote("not_me")}
-                className="rounded-full border border-white/20 px-3 py-2 text-sm text-white/80"
-              >
-                Not me
-                {counts ? ` · ${counts.not_me}` : ""}
-              </button>
-            </div>
+            )}
             <button
               type="button"
               onClick={() => toggle(node.id)}
               className={cn(
                 "w-full rounded-full border px-3 py-2 text-sm transition",
                 inConstellation
-                  ? "border-peach-400/50 bg-[#ff9b7a]/15 text-[#ffc9b5]"
+                  ? "border-[#ff9b7a]/50 bg-[#ff9b7a]/15 text-[#ffc9b5]"
                   : "border-white/15 text-white/70",
               )}
             >

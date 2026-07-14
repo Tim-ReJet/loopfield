@@ -8,23 +8,66 @@ import { getCorpus, SOURCE_COLORS } from "@/lib/corpus";
 import { useConstellation } from "@/lib/store";
 import { getVisitorId } from "@/lib/visitor";
 import { findTopCandidates } from "@loopfield/engine";
+import { useConvexAvailable } from "@/components/Providers";
 
-export default function ConstellationPage() {
+function ConstellationBody() {
   const store = useMemo(() => getCorpus(), []);
   const nodeIds = useConstellation((s) => s.nodeIds);
   const setAll = useConstellation((s) => s.setAll);
   const clear = useConstellation((s) => s.clear);
+  const convexOk = useConvexAvailable();
   const [visitorId, setVisitorId] = useState("");
-  const save = useMutation(api.constellations.save);
-  const remote = useQuery(
-    api.constellations.get,
-    visitorId ? { visitorId } : "skip",
-  );
   const [syncNote, setSyncNote] = useState("");
 
   useEffect(() => {
     setVisitorId(getVisitorId());
   }, []);
+
+  return (
+    <>
+      <div className="mt-6 flex flex-wrap gap-3">
+        {convexOk && visitorId ? (
+          <SyncButton
+            visitorId={visitorId}
+            nodeIds={nodeIds}
+            setAll={setAll}
+            onSynced={() => setSyncNote("Synced to the cloud for this device.")}
+          />
+        ) : null}
+        <button
+          type="button"
+          onClick={clear}
+          className="rounded-full border border-white/20 px-4 py-2 text-sm text-white/70"
+        >
+          Clear
+        </button>
+        <Link
+          href="/field"
+          className="rounded-full border border-white/20 px-4 py-2 text-sm text-white/70"
+        >
+          Back to field
+        </Link>
+      </div>
+      {syncNote && <p className="mt-3 text-sm text-cyan-100/80">{syncNote}</p>}
+
+      <ConstellationLists nodeIds={nodeIds} store={store} />
+    </>
+  );
+}
+
+function SyncButton({
+  visitorId,
+  nodeIds,
+  setAll,
+  onSynced,
+}: {
+  visitorId: string;
+  nodeIds: string[];
+  setAll: (ids: string[]) => void;
+  onSynced: () => void;
+}) {
+  const save = useMutation(api.constellations.save);
+  const remote = useQuery(api.constellations.get, { visitorId });
 
   useEffect(() => {
     if (remote?.nodeIds?.length && nodeIds.length === 0) {
@@ -32,10 +75,28 @@ export default function ConstellationPage() {
     }
   }, [remote, nodeIds.length, setAll]);
 
-  const nodes = nodeIds
-    .map((id) => store.nodeById.get(id))
-    .filter(Boolean);
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        await save({ visitorId, nodeIds });
+        onSynced();
+      }}
+      className="rounded-full bg-cyan-300 px-4 py-2 text-sm font-medium text-black"
+    >
+      Sync constellation
+    </button>
+  );
+}
 
+function ConstellationLists({
+  nodeIds,
+  store,
+}: {
+  nodeIds: string[];
+  store: ReturnType<typeof getCorpus>;
+}) {
+  const nodes = nodeIds.map((id) => store.nodeById.get(id)).filter(Boolean);
   const suggestions = useMemo(() => {
     if (nodeIds.length < 1) return [];
     const scores = findTopCandidates(store, 8, 0.15);
@@ -52,46 +113,8 @@ export default function ConstellationPage() {
     loop.impacts.some((id) => nodeIds.includes(id)),
   );
 
-  async function handleSync() {
-    if (!visitorId) return;
-    await save({ visitorId, nodeIds });
-    setSyncNote("Synced to the cloud for this device.");
-  }
-
   return (
-    <main className="mx-auto min-h-[100dvh] max-w-4xl px-6 pb-20 pt-28">
-      <h1 className="font-display text-5xl text-white">Your constellation</h1>
-      <p className="mt-3 text-white/60">
-        Patterns you marked &ldquo;I know this.&rdquo; Local first — sync when
-        you want continuity across sessions.
-      </p>
-
-      <div className="mt-6 flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={handleSync}
-          className="rounded-full bg-cyan-300 px-4 py-2 text-sm font-medium text-black"
-        >
-          Sync constellation
-        </button>
-        <button
-          type="button"
-          onClick={clear}
-          className="rounded-full border border-white/20 px-4 py-2 text-sm text-white/70"
-        >
-          Clear
-        </button>
-        <Link
-          href="/field"
-          className="rounded-full border border-white/20 px-4 py-2 text-sm text-white/70"
-        >
-          Back to field
-        </Link>
-      </div>
-      {syncNote && (
-        <p className="mt-3 text-sm text-cyan-100/80">{syncNote}</p>
-      )}
-
+    <>
       {nodes.length === 0 ? (
         <p className="mt-12 text-white/50">
           Empty sky. Open the field and tap{" "}
@@ -163,6 +186,19 @@ export default function ConstellationPage() {
           </ul>
         </section>
       )}
+    </>
+  );
+}
+
+export default function ConstellationPage() {
+  return (
+    <main className="mx-auto min-h-[100dvh] max-w-4xl px-6 pb-20 pt-28">
+      <h1 className="font-display text-5xl text-white">Your constellation</h1>
+      <p className="mt-3 text-white/60">
+        Patterns you marked &ldquo;I know this.&rdquo; Local first — sync when
+        cloud is connected.
+      </p>
+      <ConstellationBody />
     </main>
   );
 }
