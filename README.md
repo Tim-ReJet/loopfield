@@ -2,6 +2,9 @@
 
 **Find the loops you already live in.**
 
+Live: [https://loopfield.vercel.app](https://loopfield.vercel.app)  
+Repo: [https://github.com/Tim-ReJet/loopfield](https://github.com/Tim-ReJet/loopfield)
+
 A high-stimulus exploratory map of AuDHD (ADHD × autism) patterns and feedback loops — scientific grounding with felt language, plus a light community path for naming the unnamed.
 
 Hobby / passion project. Not a diagnostic tool.
@@ -54,6 +57,19 @@ Use **Full / Calm / Still** in the nav. Still mode swaps the 3D field for an acc
 ### Admin moderation
 
 Set `ADMIN_SECRET` in Convex dashboard env, then open `/admin` with that secret to map or reject pending submissions.
+
+### Convex cloud (production sync)
+
+Local anonymous Convex works for `npx convex dev`. For production resonance / submissions:
+
+```bash
+cd apps/web
+npx convex login
+npx convex dev   # create/link a cloud project, then
+npx convex deploy
+```
+
+Then set `NEXT_PUBLIC_CONVEX_URL` on the Vercel project to the cloud deployment URL. Without it, constellations and drafts stay local to the browser.
 
 ## Ethics
 
