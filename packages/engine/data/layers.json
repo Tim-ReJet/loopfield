@@ -1,0 +1,78 @@
+[
+  {
+    "id": "layer-0",
+    "level": "Layer 0",
+    "title": "Core Functional Primitives",
+    "subtitle": "Direct functional impairments, delays, and atypical processing mechanisms upstream of lived patterns.",
+    "nodeIds": [
+      "time-blindness",
+      "future-self-lag",
+      "initiation-friction",
+      "sequencing-prioritization",
+      "working-memory-reliability",
+      "inhibitory-control",
+      "attentional-gating",
+      "reward-volatility",
+      "sensory",
+      "sensory-prediction-load",
+      "interoception",
+      "proprioceptive-calibration",
+      "social-inference",
+      "emotional-signal-decoding-latency",
+      "transition-shock"
+    ]
+  },
+  {
+    "id": "layer-1",
+    "level": "Layer 1",
+    "title": "Primary Lived Patterns",
+    "subtitle": "First-order day-to-day patterns directly expressed from Layer 0 primitives.",
+    "nodeIds": [
+      "executive",
+      "alexithymia",
+      "masking",
+      "emotional-permanence",
+      "continuity-of-self",
+      "rsd",
+      "social-tug-of-war",
+      "stimming-conflict",
+      "monotropism",
+      "interruption-reentry-friction",
+      "shutdown-latency",
+      "social-repair-delay",
+      "social-withdrawal-reachout-conflict",
+      "language-retrieval-load",
+      "body-needs-neglect"
+    ]
+  },
+  {
+    "id": "layer-2",
+    "level": "Layer 2",
+    "title": "Compounding Loop States",
+    "subtitle": "Patterns that stabilize into repeated cycles over days and weeks.",
+    "nodeIds": [
+      "demand-avoidance",
+      "urgency-dependence",
+      "routine-novelty",
+      "decision-paralysis",
+      "interest-cycle",
+      "sleep-wake-conflict",
+      "morning-startup-lag"
+    ]
+  },
+  {
+    "id": "layer-3",
+    "level": "Layer 3",
+    "title": "Downstream Consequences",
+    "subtitle": "Cumulative long-horizon functional, physical, and relational outcomes.",
+    "nodeIds": [
+      "burnout",
+      "musculoskeletal-strain",
+      "chronic-pain-amplification",
+      "occupational-volatility",
+      "relationship-trust-erosion",
+      "admin-avoidance-accumulation",
+      "conditioning-deconditioning-swing"
+    ]
+  }
+]

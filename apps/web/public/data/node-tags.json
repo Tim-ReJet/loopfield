@@ -1,0 +1,264 @@
+{
+  "rsd": [
+    "Emotional",
+    "Rapid Overload",
+    "Nervous System"
+  ],
+  "emotional-permanence": [
+    "Working Memory",
+    "Emotional",
+    "Cognitive",
+    "Latency"
+  ],
+  "continuity-of-self": [
+    "Working Memory",
+    "Cognitive",
+    "Emotional",
+    "Temporal",
+    "Latency"
+  ],
+  "masking": [
+    "Cognitive",
+    "Social",
+    "Progressive Overload",
+    "Compensation"
+  ],
+  "social-inference": [
+    "Social",
+    "Cognitive",
+    "Latency"
+  ],
+  "emotional-signal-decoding-latency": [
+    "Emotional",
+    "Cognitive",
+    "Latency",
+    "Attunement",
+    "Nervous System"
+  ],
+  "interoception": [
+    "Body",
+    "Sensory",
+    "Nervous System",
+    "Latency"
+  ],
+  "alexithymia": [
+    "Emotional",
+    "Cognitive",
+    "Latency",
+    "Attunement"
+  ],
+  "executive": [
+    "Cognitive",
+    "Working Memory",
+    "Nervous System"
+  ],
+  "working-memory-reliability": [
+    "Working Memory",
+    "Cognitive",
+    "Latency",
+    "Emotional"
+  ],
+  "future-self-lag": [
+    "Temporal",
+    "Working Memory",
+    "Cognitive",
+    "Latency"
+  ],
+  "initiation-friction": [
+    "Cognitive",
+    "Nervous System",
+    "Latency",
+    "Temporal"
+  ],
+  "sequencing-prioritization": [
+    "Cognitive",
+    "Working Memory",
+    "Temporal"
+  ],
+  "attentional-gating": [
+    "Cognitive",
+    "Sensory",
+    "Nervous System",
+    "Volatility"
+  ],
+  "inhibitory-control": [
+    "Cognitive",
+    "Nervous System",
+    "Latency"
+  ],
+  "burnout": [
+    "Progressive Overload",
+    "Nervous System",
+    "Emotional",
+    "Body"
+  ],
+  "demand-avoidance": [
+    "Emotional",
+    "Nervous System",
+    "Cognitive"
+  ],
+  "sensory": [
+    "Sensory",
+    "Nervous System",
+    "Rapid Overload"
+  ],
+  "sensory-prediction-load": [
+    "Sensory",
+    "Nervous System",
+    "Latency",
+    "Rapid Overload"
+  ],
+  "proprioceptive-calibration": [
+    "Body",
+    "Sensory",
+    "Motor",
+    "Nervous System",
+    "Latency"
+  ],
+  "musculoskeletal-strain": [
+    "Body",
+    "Motor",
+    "Progressive Overload",
+    "Compensation"
+  ],
+  "morning-startup-lag": [
+    "Latency",
+    "Nervous System",
+    "Body",
+    "Circadian",
+    "Recovery Lag"
+  ],
+  "time-blindness": [
+    "Temporal",
+    "Cognitive",
+    "Latency"
+  ],
+  "urgency-dependence": [
+    "Reward",
+    "Temporal",
+    "Cognitive",
+    "Nervous System",
+    "Volatility"
+  ],
+  "reward-volatility": [
+    "Reward",
+    "Volatility",
+    "Nervous System",
+    "Cognitive"
+  ],
+  "routine-novelty": [
+    "Reward",
+    "Cognitive",
+    "Emotional",
+    "Volatility"
+  ],
+  "transition-shock": [
+    "Cognitive",
+    "Sensory",
+    "Latency",
+    "Rapid Overload"
+  ],
+  "monotropism": [
+    "Cognitive",
+    "Latency",
+    "Nervous System"
+  ],
+  "decision-paralysis": [
+    "Cognitive",
+    "Working Memory",
+    "Emotional",
+    "Latency"
+  ],
+  "social-tug-of-war": [
+    "Social",
+    "Emotional",
+    "Cognitive",
+    "Rapid Overload"
+  ],
+  "stimming-conflict": [
+    "Body",
+    "Sensory",
+    "Motor",
+    "Nervous System",
+    "Compensation"
+  ],
+  "interest-cycle": [
+    "Reward",
+    "Cognitive",
+    "Volatility",
+    "Progressive Overload"
+  ],
+  "sleep-wake-conflict": [
+    "Circadian",
+    "Nervous System",
+    "Body",
+    "Temporal",
+    "Recovery Lag",
+    "Progressive Overload"
+  ],
+  "interruption-reentry-friction": [
+    "Cognitive",
+    "Working Memory",
+    "Latency",
+    "Volatility"
+  ],
+  "shutdown-latency": [
+    "Nervous System",
+    "Latency",
+    "Rapid Overload",
+    "Recovery Lag"
+  ],
+  "social-repair-delay": [
+    "Social",
+    "Emotional",
+    "Latency",
+    "Working Memory"
+  ],
+  "social-withdrawal-reachout-conflict": [
+    "Social",
+    "Emotional",
+    "Nervous System",
+    "Latency"
+  ],
+  "language-retrieval-load": [
+    "Cognitive",
+    "Social",
+    "Latency",
+    "Rapid Overload"
+  ],
+  "body-needs-neglect": [
+    "Body",
+    "Interoceptive",
+    "Progressive Overload",
+    "Recovery Lag"
+  ],
+  "chronic-pain-amplification": [
+    "Body",
+    "Sensory",
+    "Nervous System",
+    "Progressive Overload"
+  ],
+  "occupational-volatility": [
+    "Cognitive",
+    "Temporal",
+    "Volatility",
+    "Progressive Overload"
+  ],
+  "relationship-trust-erosion": [
+    "Social",
+    "Emotional",
+    "Progressive Overload"
+  ],
+  "admin-avoidance-accumulation": [
+    "Cognitive",
+    "Temporal",
+    "Progressive Overload",
+    "Compensation"
+  ],
+  "conditioning-deconditioning-swing": [
+    "Body",
+    "Motor",
+    "Volatility",
+    "Progressive Overload"
+  ]
+}

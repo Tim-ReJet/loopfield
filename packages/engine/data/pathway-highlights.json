@@ -1,0 +1,21 @@
+{
+  "continuity-of-self->sleep-wake-conflict": "Weak continuity of self can make morning startup feel like a full reboot. Night then becomes the only place continuity feels recoverable, so delaying sleep to protect that thread becomes more likely.",
+  "sleep-wake-conflict->continuity-of-self": "Sleep debt raises morning startup friction and fragments memory carryover, which can make continuity of self feel even less stable across days.",
+  "continuity-of-self->decision-paralysis": "When continuity of self is unstable, future-you can feel like a stranger. That weakens commitment to longer-horizon choices and increases decision stall, especially under uncertainty.",
+  "interoception->decision-paralysis": "If body signals are muted or ambiguous, it is harder to sense what future-you will need (rest, food, pace, recovery). Choices lose emotional clarity and become cognitively over-analysed.",
+  "reward-volatility->decision-paralysis": "When reward salience keeps shifting, long-horizon priorities lose traction. The brain keeps reopening the choice set, making commitment and sequencing much harder.",
+  "sensory-prediction-load->sleep-wake-conflict": "High sensory uncertainty keeps threat-monitoring active into the evening. Bedtime then feels less like shutdown and more like vigilance, delaying sleep onset and reinforcing late-night wakefulness.",
+  "proprioceptive-calibration->sleep-wake-conflict": "If body-in-space signals stay noisy, the nervous system keeps seeking movement, pressure, or repositioning to feel settled. That calibration search can delay sleep onset and fragment shutdown.",
+  "proprioceptive-calibration->decision-paralysis": "When posture, tension, and movement cues are hard to read, future-body needs are harder to forecast. Decisions about timing, pacing, and effort stay uncertain and easier to postpone.",
+  "proprioceptive-calibration->musculoskeletal-strain": "When body-map signals are inconsistent, compensation patterns become the default. Over time, repeated compensation can shift load into vulnerable joints and tissues.",
+  "morning-startup-lag->sleep-wake-conflict": "When mornings require a long activation ramp, nights feel like the only period of fully coherent function. That perceived payoff can reinforce delayed sleep timing.",
+  "sleep-wake-conflict->morning-startup-lag": "Short or delayed sleep increases sleep inertia and lowers early executive access, stretching the next morning's startup ramp.",
+  "morning-startup-lag->decision-paralysis": "If early-state calibration is incomplete, priorities are harder to sequence and commit to. Small decisions stall until activation catches up.",
+  "emotional-signal-decoding-latency->alexithymia": "Delayed emotional decoding is an upstream mechanism that commonly presents as alexithymia in lived experience: feelings are present, but labeling lags behind sensation.",
+  "alexithymia->emotional-signal-decoding-latency": "Alexithymia can be read as the lived expression of slower emotional-signal decoding, especially under overload or fast social demands.",
+  "working-memory-reliability->continuity-of-self": "When active self-state context drops from working memory, continuity of self weakens and identity can feel discontinuous across time.",
+  "working-memory-reliability->emotional-permanence": "When active relational context drops from working memory, emotional continuity weakens and people can feel less psychologically present between interactions.",
+  "emotional-permanence->working-memory-reliability": "Instability in emotional permanence often reflects upstream working-memory reliability limits in maintaining active social and self-referential threads.",
+  "continuity-of-self->working-memory-reliability": "Fragmented continuity of self often reflects upstream working-memory reliability limits in maintaining cross-time self-representation.",
+  "musculoskeletal-strain->proprioceptive-calibration": "Persistent musculoskeletal strain often signals long-term compensation for unresolved proprioceptive uncertainty, especially under fatigue and repeated transitions."
+}

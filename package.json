@@ -1,0 +1,16 @@
+{
+  "name": "loopfield",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w web",
+    "build": "npm run build -w @loopfield/engine && npm run build -w web",
+    "test": "npm run test -w @loopfield/engine",
+    "lint": "npm run lint -w web",
+    "convex:dev": "npm run convex:dev -w web",
+    "convex:deploy": "npm run convex:deploy -w web"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "emotional-signal-decoding-latency": {
+    "kind": "mechanism",
+    "targetId": "alexithymia",
+    "text": "This Layer 0 mechanism commonly expresses as Layer 1 alexithymia when emotional load is high."
+  },
+  "alexithymia": {
+    "kind": "expression",
+    "targetId": "emotional-signal-decoding-latency",
+    "text": "This Layer 1 lived pattern is often driven by Layer 0 emotional-signal decoding latency."
+  },
+  "working-memory-reliability": {
+    "kind": "mechanism",
+    "targetId": "continuity-of-self",
+    "text": "This Layer 0 mechanism commonly expresses as Layer 1 continuity-of-self fragmentation when cross-time self and social threads drop out."
+  },
+  "continuity-of-self": {
+    "kind": "expression",
+    "targetId": "working-memory-reliability",
+    "text": "This Layer 1 lived pattern is often amplified by Layer 0 working-memory reliability instability."
+  },
+  "emotional-permanence": {
+    "kind": "expression",
+    "targetId": "working-memory-reliability",
+    "text": "This Layer 1 lived pattern is often shaped by Layer 0 working-memory reliability, especially in relationship carryover."
+  },
+  "proprioceptive-calibration": {
+    "kind": "mechanism",
+    "targetId": "musculoskeletal-strain",
+    "text": "This Layer 0 mechanism can accumulate into Layer 3 musculoskeletal strain when compensation patterns become chronic."
+  },
+  "musculoskeletal-strain": {
+    "kind": "expression",
+    "targetId": "proprioceptive-calibration",
+    "text": "This Layer 3 downstream pattern is often rooted in unresolved Layer 0 proprioceptive calibration uncertainty."
+  }
+}
